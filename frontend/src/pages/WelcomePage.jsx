@@ -1,10 +1,17 @@
 // WelcomePage - Shows round info, context, and start button
 
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 
 export default function WelcomePage() {
-    const { currentRound, balance, getCurrentRoundData, startRound, gamePhase, roundHistory } = useGame();
+    const { currentRound, balance, getCurrentRoundData, startRound, roundHistory } = useGame();
+    const navigate = useNavigate();
     const roundData = getCurrentRoundData();
+
+    const handleStart = () => {
+        startRound();
+        navigate('/portfolio');
+    };
 
     // Calculate performance from previous rounds
     const previousRoundReturn = roundHistory.length > 0
@@ -79,7 +86,7 @@ export default function WelcomePage() {
 
                     {/* Start Button */}
                     <button
-                        onClick={startRound}
+                        onClick={handleStart}
                         className="btn-primary w-full text-lg py-4 flex items-center justify-center gap-2"
                     >
                         <span>Start Round {currentRound}</span>

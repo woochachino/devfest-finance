@@ -1,32 +1,22 @@
 // App.jsx - Main application with routing
 
-import { GameProvider, useGame } from './context/GameContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { GameProvider } from './context/GameContext';
 import WelcomePage from './pages/WelcomePage';
 import PortfolioPage from './pages/PortfolioPage';
 import ResultsPage from './pages/ResultsPage';
-import GameCompletePage from './pages/GameCompletePage';
-
-function GameRouter() {
-    const { gamePhase } = useGame();
-
-    switch (gamePhase) {
-        case 'welcome':
-            return <WelcomePage />;
-        case 'portfolio':
-            return <PortfolioPage />;
-        case 'results':
-            return <ResultsPage />;
-        case 'complete':
-            return <GameCompletePage />;
-        default:
-            return <WelcomePage />;
-    }
-}
 
 function App() {
     return (
         <GameProvider>
-            <GameRouter />
+            <Router>
+                <Routes>
+                    <Route path="/" element={<WelcomePage />} />
+                    <Route path="/portfolio" element={<PortfolioPage />} />
+                    <Route path="/results" element={<ResultsPage />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Router>
         </GameProvider>
     );
 }

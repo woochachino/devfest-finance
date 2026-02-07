@@ -1,6 +1,7 @@
 // ResultsPage - Shows K2 Think analysis, animation, results, and debrief
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { getPreDecisionAnalysis, getEducationalDebrief } from '../services/k2ThinkApi';
 import K2ThinkAnalysis from '../components/K2ThinkAnalysis';
@@ -21,7 +22,13 @@ export default function ResultsPage() {
         setDebrief,
     } = useGame();
 
+    const navigate = useNavigate();
     const roundData = getCurrentRoundData();
+
+    const handleContinue = () => {
+        advanceToNextRound();
+        navigate('/');
+    };
 
     // UI State
     const [showAnimation, setShowAnimation] = useState(true);
@@ -203,7 +210,7 @@ export default function ResultsPage() {
                 {showDebrief && !isLoadingDebrief && (
                     <section className="animate-fade-in pt-4">
                         <button
-                            onClick={advanceToNextRound}
+                            onClick={handleContinue}
                             className="btn-primary w-full text-lg py-4 flex items-center justify-center gap-2"
                         >
                             {currentRound < 3 ? (

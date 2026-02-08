@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useGame } from '../context/GameContext';
 import MarketBackground from '../components/MarketBackground';
+import Navbar from '../components/Navbar';
 
 function AvatarModel() {
     const { scene } = useGLTF('/model.glb');
@@ -22,6 +23,7 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-[#0b0f19] flex flex-col items-center justify-center p-6 text-slate-200 text-center relative overflow-hidden">
+            <Navbar />
             {/* Background Grid/Effect & Market Animation */}
             <MarketBackground />
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
@@ -43,9 +45,9 @@ export default function LandingPage() {
                 </div>
 
                 {/* Main Content Area: Stats & Avatar */}
-                <div className="grid md:grid-cols-12 gap-8 items-center mb-16 border-y border-slate-800 py-12 bg-slate-900/30 backdrop-blur-sm">
+                <div className="grid md:grid-cols-12 gap-8 items-center mb-16 py-12">
                     {/* Stats / Trader Profile (Left) */}
-                    <div className="md:col-span-3 text-left space-y-6 px-6">
+                    <div className="md:col-span-3 text-right space-y-6 px-6">
                         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-800 pb-2">
                             TRADER PROFILE
                         </h3>
@@ -67,16 +69,13 @@ export default function LandingPage() {
 
                         <div>
                             <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Status</div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+
                                 <span className="text-sm font-medium text-emerald-500">MARKET OPEN</span>
-                            </div>
                         </div>
                     </div>
 
                     {/* Avatar (Center) */}
                     <div className="md:col-span-6 h-[400px] relative">
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-transparent z-10 opacity-50"></div>
                         <Suspense fallback={
                             <div className="h-full flex items-center justify-center">
                                 <div className="text-center">

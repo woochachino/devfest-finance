@@ -1,4 +1,4 @@
-// ResultsPage - Shows K2 Think analysis, animation, results, and debrief
+// ResultsPage - Graph first, then reveal, then analysis
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +8,7 @@ import K2ThinkAnalysis from '../components/K2ThinkAnalysis';
 import K2ThinkDebrief from '../components/K2ThinkDebrief';
 import StockResultCard from '../components/StockResultCard';
 import LoadingScreen from '../components/LoadingScreen';
+import PortfolioGraph from '../components/PortfolioGraph';
 
 export default function ResultsPage() {
     const {
@@ -41,14 +42,16 @@ export default function ResultsPage() {
         navigate('/');
     };
 
-    // UI State
+    // UI State — sequential reveal
     const [showAnimation, setShowAnimation] = useState(true);
+    const [showGraph, setShowGraph] = useState(false);
+    const [showReveal, setShowReveal] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [showDebrief, setShowDebrief] = useState(false);
     const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
     const [isLoadingDebrief, setIsLoadingDebrief] = useState(false);
 
-    // Fetch pre-decision analysis on mount
+    // Fetch pre-decision analysis in parallel (start immediately)
     useEffect(() => {
         const fetchAnalysis = async () => {
             setIsLoadingAnalysis(true);
@@ -63,19 +66,24 @@ export default function ResultsPage() {
         fetchAnalysis();
     }, [allocations, roundData, setPreAnalysis]);
 
-    // Handle animation complete
+    // Loading screen complete → show graph
     const handleAnimationComplete = () => {
         setShowAnimation(false);
-        setShowResults(true);
+        setShowGraph(true);
+    };
 
-        // Fetch debrief after showing results
+    // Graph animation complete → cascade reveal
+    const handleGraphComplete = () => {
+        setShowReveal(true);
         setTimeout(() => {
-            setShowDebrief(true);
-            fetchDebrief();
+            setShowResults(true);
+            setTimeout(() => {
+                setShowDebrief(true);
+                fetchDebrief();
+            }, 1000);
         }, 1500);
     };
 
-    // Fetch educational debrief
     const fetchDebrief = async () => {
         setIsLoadingDebrief(true);
         try {
@@ -87,18 +95,12 @@ export default function ResultsPage() {
         setIsLoadingDebrief(false);
     };
 
-    // Show animation first
     if (showAnimation) {
-        return (
-            <LoadingScreen
-                onComplete={handleAnimationComplete}
-            />
-        );
+        return <LoadingScreen onComplete={handleAnimationComplete} />;
     }
 
     return (
         <div className="min-h-screen bg-[#0b0f19] text-slate-200 font-sans selection:bg-amber-500/30 overflow-x-hidden">
-            {/* Background Effects */}
             <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
 
             {/* Header */}
@@ -112,61 +114,82 @@ export default function ResultsPage() {
                         <div className="h-4 w-[1px] bg-slate-800"></div>
                         <div className="font-mono text-sm text-slate-400">SCENARIO 0{currentRound} COMPLETE</div>
                     </div>
-
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={handleHome}
-                            className="text-xs font-mono text-slate-500 hover:text-white uppercase tracking-widest transition-colors"
-                        >
-                            EXIT TO DASHBOARD
-                        </button>
-                    </div>
+                    <button
+                        onClick={handleHome}
+                        className="text-xs font-mono text-slate-500 hover:text-white uppercase tracking-widest transition-colors"
+                    >
+                        EXIT TO DASHBOARD
+                    </button>
                 </div>
             </header>
 
             {/* Main Content */}
             <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
 
-                {/* The Reveal Section */}
-                <div className="text-center mb-16 animate-slide-up">
-                    <div className="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-mono font-bold mb-6 uppercase tracking-widest">
-                        Historical Context Identified
-                    </div>
-
-                    <h1 className="text-6xl md:text-8xl font-bold text-white mb-2 tracking-tighter">
-                        <span className="gradient-text-gold">{roundData.year}</span>
-                    </h1>
-
-                    <h2 className="text-2xl md:text-3xl text-slate-300 font-light mb-8">
-                        {roundData.title}
-                    </h2>
-
-                    <div className="max-w-2xl mx-auto bg-slate-900/50 border border-slate-800 p-6 rounded-sm relative">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
-                        <p className="text-slate-400 leading-relaxed font-light">
-                            "{roundData.context}"
-                        </p>
-                    </div>
-                </div>
-
-                {/* Section 1: Pre-Decision Analysis */}
-                <section className="mb-16 animate-fade-in" style={{ animationDelay: '200ms' }}>
-                    <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-2">
-                        <span className="text-amber-500 text-xl">◈</span>
-                        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-                            AI Analyst Remarks (Pre-Results)
-                        </h2>
-                    </div>
-                    <div className="bg-slate-900 border border-slate-800 p-6 rounded-sm">
-                        <K2ThinkAnalysis analysis={preAnalysis} isLoading={isLoadingAnalysis} />
-                    </div>
-                </section>
-
-                {/* Section 2 & 3: Performance Results */}
-                {showResults && results && (
-                    <section className="mb-16 animate-fade-in" style={{ animationDelay: '400ms' }}>
+                {/* Section 0: Portfolio Graph — FIRST */}
+                {showGraph && (
+                    <section className="mb-16 animate-fade-in">
                         <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-2">
-                            <span className="text-emerald-500 text-xl">◈</span>
+                            <span className="text-amber-500 text-xl">&#9670;</span>
+                            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                                Portfolio Performance
+                            </h2>
+                        </div>
+                        <div className="bg-slate-900/50 border border-slate-800 p-6 rounded-sm">
+                            <PortfolioGraph
+                                roundId={roundData.id}
+                                allocations={allocations}
+                                initialBalance={results?.initialBalance ?? 10000}
+                                onAnimationComplete={handleGraphComplete}
+                            />
+                        </div>
+                    </section>
+                )}
+
+                {/* Section 1: The Reveal — AFTER graph */}
+                {showReveal && (
+                    <div className="text-center mb-16 animate-fade-in">
+                        <div className="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-mono font-bold mb-6 uppercase tracking-widest">
+                            Historical Context Identified
+                        </div>
+
+                        <h1 className="text-6xl md:text-8xl font-bold text-white mb-2 tracking-tighter">
+                            <span className="gradient-text-gold">{roundData.year}</span>
+                        </h1>
+
+                        <h2 className="text-2xl md:text-3xl text-slate-300 font-light mb-8">
+                            {roundData.title}
+                        </h2>
+
+                        <div className="max-w-2xl mx-auto bg-slate-900/50 border border-slate-800 p-6 rounded-sm relative">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+                            <p className="text-slate-400 leading-relaxed font-light">
+                                "{roundData.context}"
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Section 2: AI Pre-Decision Analysis */}
+                {showReveal && (
+                    <section className="mb-16 animate-fade-in">
+                        <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-2">
+                            <span className="text-amber-500 text-xl">&#9670;</span>
+                            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                                AI Analyst Remarks
+                            </h2>
+                        </div>
+                        <div className="bg-slate-900 border border-slate-800 p-6 rounded-sm">
+                            <K2ThinkAnalysis analysis={preAnalysis} isLoading={isLoadingAnalysis} />
+                        </div>
+                    </section>
+                )}
+
+                {/* Section 3: Performance Metrics */}
+                {showResults && results && (
+                    <section className="mb-16 animate-fade-in">
+                        <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-2">
+                            <span className="text-emerald-500 text-xl">&#9670;</span>
                             <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
                                 Performance Metrics
                             </h2>
@@ -180,14 +203,12 @@ export default function ResultsPage() {
                                     ${results.initialBalance.toLocaleString('en-US')}
                                 </div>
                             </div>
-
                             <div className="bg-slate-900 border border-slate-800 p-6">
                                 <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-2">Ending Equity</div>
-                                <div className={`text-3xl font-mono-numbers font-bold ${results.overallReturn >= 0 ? 'text-white' : 'text-white'}`}>
+                                <div className="text-3xl font-mono-numbers font-bold text-white">
                                     ${results.finalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                                 </div>
                             </div>
-
                             <div className="bg-slate-900 border border-slate-800 p-6 relative overflow-hidden">
                                 <div className={`absolute inset-0 opacity-10 ${results.overallReturn >= 0 ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                                 <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-2">Net Return</div>
@@ -211,7 +232,6 @@ export default function ResultsPage() {
                                     <div className="font-mono-numbers text-emerald-400 font-bold">+{results.bestPerformer.returnPercent.toFixed(1)}%</div>
                                 </div>
                             )}
-
                             {results.worstPerformer && results.stockResults.length > 1 && (
                                 <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/20 rounded-sm">
                                     <div className="flex items-center gap-3">
@@ -243,9 +263,9 @@ export default function ResultsPage() {
 
                 {/* Section 4: Educational Debrief */}
                 {showDebrief && (
-                    <section className="mb-16 animate-fade-in" style={{ animationDelay: '600ms' }}>
+                    <section className="mb-16 animate-fade-in">
                         <div className="flex items-center gap-3 mb-6 border-b border-slate-800 pb-2">
-                            <span className="text-blue-500 text-xl">◈</span>
+                            <span className="text-blue-500 text-xl">&#9670;</span>
                             <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest">
                                 Analyst Debrief
                             </h2>
@@ -265,7 +285,7 @@ export default function ResultsPage() {
                         >
                             <span className="flex items-center gap-3">
                                 {currentRound < 3 ? `PROCEED TO SCENARIO 0${currentRound + 1}` : 'FINALIZE SESSION'}
-                                <span className="text-slate-400 group-hover:text-slate-900 transition-colors">→</span>
+                                <span className="text-slate-400 group-hover:text-slate-900 transition-colors">&rarr;</span>
                             </span>
                         </button>
                     </section>

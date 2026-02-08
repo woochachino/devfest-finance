@@ -150,3 +150,12 @@ body {
 .animate-dash-draw {
   animation: dash-draw 4s ease-out forwards;
 }
+
+@keyframes border-flash {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.6); }
+  50% { border-color: rgba(239, 68, 68, 0.15); }
+}
+
+.animate-border-flash {
+  animation: border-flash 0.8s ease-in-out infinite;
+}

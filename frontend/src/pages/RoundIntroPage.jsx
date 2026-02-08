@@ -8,9 +8,9 @@ export default function RoundIntroPage() {
     const navigate = useNavigate();
     const roundData = getCurrentRoundData();
 
-    // Calculate performance from previous rounds
+    // Get previous round's return from history
     const previousRoundReturn = roundHistory.length > 0
-        ? ((balance - 10000) / 10000 * 100).toFixed(1)
+        ? roundHistory[roundHistory.length - 1].results?.overallReturn?.toFixed(1)
         : null;
 
     const handleStart = (mode) => {

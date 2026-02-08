@@ -120,7 +120,7 @@ export function GameProvider({ children }) {
             setResults(null);
             setPreAnalysis(null);
             setDebrief(null);
-            setGamePhase('welcome');
+            setGamePhase('roundIntro');
         } else {
             setGamePhase('complete');
         }
@@ -134,7 +134,7 @@ export function GameProvider({ children }) {
         setResults(null);
         setPreAnalysis(null);
         setDebrief(null);
-        setGamePhase('welcome');
+        setGamePhase('landing');
         setRoundHistory([]);
         setGameMode(null);
     }, []);

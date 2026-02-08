@@ -220,11 +220,10 @@ export default function ResultsPage() {
                             )}
                         </div>
                         {cashAnimDone && results && (
-                            <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${
-                                isPositive
+                            <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${isPositive
                                     ? 'bg-emerald-500/20 text-emerald-400'
                                     : 'bg-red-500/20 text-red-400'
-                            }`}>
+                                }`}>
                                 {isPositive ? '+' : ''}{results.overallReturn.toFixed(1)}%
                             </span>
                         )}
@@ -240,18 +239,16 @@ export default function ResultsPage() {
                     <div ref={heroRef} className="text-center mb-12 pt-4">
                         {/* Return badge */}
                         <div ref={returnRef}>
-                            <div className={`inline-block mb-3 px-4 py-1.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest border ${
-                                isPositive
+                            <div className={`inline-block mb-3 px-4 py-1.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest border ${isPositive
                                     ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                                     : 'bg-red-500/10 border-red-500/30 text-red-400'
-                            }`}>
+                                }`}>
                                 {isPositive ? 'Profitable Trade' : 'Loss Recorded'}
                             </div>
 
                             {/* Giant return number */}
-                            <h1 className={`text-7xl md:text-9xl font-black tracking-tighter leading-none mb-2 ${
-                                isPositive ? 'text-emerald-400' : 'text-red-400'
-                            }`}>
+                            <h1 className={`text-7xl md:text-9xl font-black tracking-tighter leading-none mb-2 ${isPositive ? 'text-emerald-400' : 'text-red-400'
+                                }`}>
                                 {isPositive ? '+' : ''}{results.overallReturn.toFixed(1)}%
                             </h1>
 
@@ -290,8 +287,29 @@ export default function ResultsPage() {
                     </section>
                 )}
 
-                {/* The Reveal */}
+                {/* Next Round Button - Show immediately after graph */}
                 {showReveal && (
+                    <section className="animate-fade-in pt-4 pb-20 flex justify-center">
+                        <button
+                            onClick={handleContinue}
+                            className="group relative px-10 py-4 bg-white hover:bg-slate-100 text-slate-900 font-bold uppercase tracking-widest text-sm transition-all duration-200 hover:scale-105 rounded-lg shadow-lg shadow-white/10"
+                        >
+                            <span className="flex items-center gap-3">
+                                {currentRound < 3 ? `NEXT ROUND` : 'VIEW FINAL RESULTS'}
+                                <span className="text-slate-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
+                            </span>
+                        </button>
+                    </section>
+                )}
+
+                {/* 
+                ============================================================
+                COMMENTED OUT FOR BETWEEN-ROUNDS - WILL BE SHOWN AT END OF GAME
+                ============================================================
+                */}
+
+                {/* The Reveal - COMMENTED OUT FOR END OF GAME */}
+                {/* {showReveal && (
                     <div ref={revealRef} className="text-center mb-14 opacity-0">
                         <div className="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-[10px] font-mono font-bold mb-5 uppercase tracking-widest">
                             Historical Context Identified
@@ -312,10 +330,10 @@ export default function ResultsPage() {
                             </p>
                         </div>
                     </div>
-                )}
+                )} */}
 
-                {/* AI Pre-Decision Analysis */}
-                {showReveal && (
+                {/* AI Pre-Decision Analysis - COMMENTED OUT FOR END OF GAME */}
+                {/* {showReveal && (
                     <section className="mb-14 animate-fade-in">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
@@ -327,10 +345,10 @@ export default function ResultsPage() {
                             <K2ThinkAnalysis analysis={preAnalysis} isLoading={isLoadingAnalysis} />
                         </div>
                     </section>
-                )}
+                )} */}
 
-                {/* Performance Metrics */}
-                {showResults && results && (
+                {/* Performance Metrics - COMMENTED OUT FOR END OF GAME */}
+                {/* {showResults && results && (
                     <section className="mb-14 animate-fade-in">
                         <div className="flex items-center gap-3 mb-4">
                             <div className={`w-2 h-2 rounded-full ${isPositive ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
@@ -339,7 +357,6 @@ export default function ResultsPage() {
                             </h2>
                         </div>
 
-                        {/* Best/Worst */}
                         <div className="grid md:grid-cols-2 gap-3 mb-6">
                             {results.bestPerformer && (
                                 <div className="flex items-center justify-between p-4 bg-emerald-900/10 border border-emerald-500/20 rounded-lg">
@@ -369,7 +386,6 @@ export default function ResultsPage() {
                             )}
                         </div>
 
-                        {/* Stock Cards */}
                         <div className="grid md:grid-cols-2 gap-4">
                             {results.stockResults.map((result, index) => (
                                 <StockResultCard
@@ -380,10 +396,10 @@ export default function ResultsPage() {
                             ))}
                         </div>
                     </section>
-                )}
+                )} */}
 
-                {/* Educational Debrief */}
-                {showDebrief && (
+                {/* Educational Debrief - COMMENTED OUT FOR END OF GAME */}
+                {/* {showDebrief && (
                     <section className="mb-14 animate-fade-in">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
@@ -395,10 +411,10 @@ export default function ResultsPage() {
                             <K2ThinkDebrief debrief={debrief} isLoading={isLoadingDebrief} />
                         </div>
                     </section>
-                )}
+                )} */}
 
-                {/* Continue Button */}
-                {showDebrief && !isLoadingDebrief && (
+                {/* Old Continue Button - was tied to debrief loading */}
+                {/* {showDebrief && !isLoadingDebrief && (
                     <section className="animate-fade-in pt-4 pb-20 flex justify-center">
                         <button
                             onClick={handleContinue}
@@ -410,7 +426,7 @@ export default function ResultsPage() {
                             </span>
                         </button>
                     </section>
-                )}
+                )} */}
             </div>
         </div>
     );

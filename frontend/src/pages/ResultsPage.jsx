@@ -60,7 +60,7 @@ export default function ResultsPage() {
             navigate('/complete');
         } else {
             advanceToNextRound();
-            navigate('/intro');
+            navigate('/portfolio');
         }
     };
 

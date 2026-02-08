@@ -24,7 +24,7 @@ export async function getGameAnalysis(roundHistory, gameRounds) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'K2-Chat',
+                model: 'MBZUAI-IFM/K2-Think-v2',
                 messages: [
                     {
                         role: 'system',
@@ -38,6 +38,7 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanati
                 ],
                 max_tokens: 3000,
                 temperature: 0.7,
+                stream: false,
             }),
         });
 
@@ -55,8 +56,10 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanati
             return getMockAnalysis(roundHistory, gameRounds);
         }
 
-        // Parse JSON from the response — handle potential markdown fences
+        // Parse JSON from the response — strip think tokens and markdown fences
         let cleaned = content.trim();
+        // K2-Think includes <think>...</think> reasoning — strip it
+        cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>\s*/g, '').trim();
         if (cleaned.startsWith('```')) {
             cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
         }

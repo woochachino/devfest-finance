@@ -11,7 +11,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/k2api': {
-        target: 'https://api.mbzuai.ae',
+        target: 'https://api.k2think.ai',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/k2api/, ''),
       },

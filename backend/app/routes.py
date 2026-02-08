@@ -24,6 +24,7 @@ from app.scoring import (
     calculate_score, compute_stock_results,
 )
 from app.llm_service import generate_retrospective
+from app.k2_service import generate_game_analysis
 
 router = APIRouter(prefix="/api")
 

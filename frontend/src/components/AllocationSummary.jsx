@@ -20,10 +20,20 @@ const stockSectors = {
     COST: 'Consumer Retail', WMT: 'Consumer Retail', TGT: 'Consumer Retail',
     LMT: 'Defense', TSLA: 'Automotive',
     SPY: 'Index Fund',
+    // Round 4 - ZIRP Unwind
+    NFLX: 'Entertainment', PYPL: 'Financial Services',
+    PG: 'Consumer Retail', T: 'Telecommunications', ARKK: 'Index Fund',
+    XLE: 'Energy',
+    // Round 5 - Nvidia Singularity
+    SMCI: 'Technology', ARM: 'Semiconductors', PLTR: 'Technology', CVNA: 'Automotive',
 };
 
-export default function AllocationSummary() {
-    const { getTotalAllocation, balance, allocations, getCurrentRoundData } = useGame();
+export default function AllocationSummary({ mpGetTotal, mpBalance, mpAllocations, mpRoundData }) {
+    const game = useGame();
+    const getTotalAllocation = mpGetTotal || game.getTotalAllocation;
+    const balance = mpBalance ?? game.balance;
+    const allocations = mpAllocations || game.allocations;
+    const getCurrentRoundData = mpRoundData ? () => mpRoundData : game.getCurrentRoundData;
 
     const total = getTotalAllocation();
     const isComplete = total === 100;

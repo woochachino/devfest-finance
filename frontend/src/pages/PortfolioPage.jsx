@@ -72,9 +72,10 @@ export default function PortfolioPage() {
                         </div>
                         <div className="h-4 w-[1px] bg-slate-800"></div>
                         <div className="flex items-center gap-2">
-                            <span className="font-mono text-amber-500 text-sm font-bold">SCENARIO 0{currentRound}</span>
-                            <span className="text-slate-600 text-xs uppercase tracking-wider">// MYSTERY CYCLE</span>
+                            <span className="font-mono text-amber-500 text-sm font-bold">SCENARIO 0{currentRound}/03</span>
                         </div>
+                        <div className="h-4 w-[1px] bg-slate-800"></div>
+                        <span className="text-slate-500 text-xs truncate max-w-md hidden md:inline">{roundData.description}</span>
                     </div>
 
                     <div className="flex items-center gap-6">
@@ -85,7 +86,7 @@ export default function PortfolioPage() {
                             </div>
                         </div>
                         <button
-                            onClick={() => navigate('/intro')}
+                            onClick={() => navigate('/')}
                             className="text-xs font-mono text-slate-500 hover:text-white uppercase tracking-widest border border-slate-800 hover:border-slate-600 px-3 py-1 rounded"
                         >
                             Abort

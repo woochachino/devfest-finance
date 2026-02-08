@@ -15,7 +15,7 @@ function AvatarModel() {
 }
 
 export default function LandingPage() {
-    const { startGame, setGameMode, highscore } = useGame();
+    const { startGame, startRound, setGameMode, highscore } = useGame();
     const navigate = useNavigate();
     const [showTimerSelect, setShowTimerSelect] = useState(false);
     const [selectedDuration, setSelectedDuration] = useState(null);
@@ -27,7 +27,8 @@ export default function LandingPage() {
         }
         setGameMode(mode);
         startGame();
-        navigate('/intro');
+        startRound();
+        navigate('/portfolio');
     };
 
     const handleTimedClick = () => {
@@ -293,10 +294,36 @@ export default function LandingPage() {
                                             <span className="px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold uppercase animate-pulse">Mode</span>
                                         </div>
                                         <div className="text-xs text-slate-400 group-hover:text-red-300/70 transition-colors">
-                                            Race the clock • 15/30/60s
+                                            Race the clock
                                         </div>
                                     </div>
                                     <svg className="w-5 h-5 text-slate-600 group-hover:text-red-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </button>
+                            {/* Multiplayer Button */}
+                            <button
+                                onClick={() => navigate('/multiplayer')}
+                                className="w-full group relative overflow-hidden rounded-xl p-5 bg-gradient-to-br from-purple-900/40 via-violet-900/30 to-fuchsia-900/40 border border-purple-500/30 hover:border-purple-400/60 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/20"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/10 to-purple-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-gradient-to-br from-purple-500/20 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+
+                                <div className="relative flex items-center gap-4">
+                                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/30 to-violet-600/30 border border-purple-400/30 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
+                                        👥
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="font-black text-xl text-white group-hover:text-purple-300 transition-colors">MULTIPLAYER</span>
+                                            <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[10px] font-bold uppercase">New</span>
+                                        </div>
+                                        <div className="text-xs text-slate-400 group-hover:text-purple-300/70 transition-colors">
+                                            Compete with friends • 5 rounds
+                                        </div>
+                                    </div>
+                                    <svg className="w-5 h-5 text-slate-600 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>

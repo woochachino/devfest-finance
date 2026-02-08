@@ -24,11 +24,17 @@ export const sectorColors = {
     'Defense': { primary: '#64748b', bg: 'from-slate-500/20', border: 'border-slate-400/40', text: 'text-slate-300', glow: 'shadow-slate-500/30' },
     'Automotive': { primary: '#ef4444', bg: 'from-red-500/20', border: 'border-red-500/40', text: 'text-red-400', glow: 'shadow-red-500/30' },
     'Index Fund': { primary: '#6366f1', bg: 'from-indigo-500/20', border: 'border-indigo-500/40', text: 'text-indigo-400', glow: 'shadow-indigo-500/30' },
+    'Telecommunications': { primary: '#0891b2', bg: 'from-cyan-600/20', border: 'border-cyan-600/40', text: 'text-cyan-500', glow: 'shadow-cyan-600/30' },
     'Unknown': { primary: '#94a3b8', bg: 'from-slate-500/20', border: 'border-slate-500/40', text: 'text-slate-400', glow: 'shadow-slate-500/30' },
 };
 
-export default function StockSlider({ stock }) {
-    const { allocations, setStockAllocation, balance, getTotalAllocation } = useGame();
+export default function StockSlider({ stock, mpAllocations, mpSetAllocation, mpBalance, mpGetTotal }) {
+    const game = useGame();
+    // Use multiplayer props if provided, otherwise fall back to GameContext
+    const allocations = mpAllocations || game.allocations;
+    const setStockAllocation = mpSetAllocation || game.setStockAllocation;
+    const balance = mpBalance ?? game.balance;
+    const getTotalAllocation = mpGetTotal || game.getTotalAllocation;
     const [showInfo, setShowInfo] = useState(false);
     const [stockInfo, setStockInfo] = useState(null);
 

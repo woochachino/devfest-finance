@@ -9,12 +9,15 @@ const MultiplayerContext = createContext(null);
 // API base URL - scrub trailing slash
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
+// Railway backend base for WebSocket (Vercel rewrites only work for HTTP, not WS)
+const WS_BACKEND = (import.meta.env.VITE_WS_URL || import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 // Get WebSocket URL from API base or current host
 const getWsUrl = (code, pid) => {
-    if (API_BASE) {
+    if (WS_BACKEND) {
         // Production: convert https://xxx to wss://xxx
-        const wsProtocol = API_BASE.startsWith('https') ? 'wss:' : 'ws:';
-        const host = API_BASE.replace(/^https?:\/\//, '');
+        const wsProtocol = WS_BACKEND.startsWith('https') ? 'wss:' : 'ws:';
+        const host = WS_BACKEND.replace(/^https?:\/\//, '');
         return `${wsProtocol}//${host}/api/multiplayer/ws/${code}/${pid}`;
     }
     // Dev: use current hostname with port 8000

@@ -8,7 +8,8 @@
       "Bash(python scripts/fetch_stock_data.py:*)",
       "Bash(npx vite build:*)",
       "Bash(curl -s -w \"\\\\nHTTP_STATUS: %{http_code}\" -X POST \"https://api.mbzuai.ae/v1/chat/completions\" -H \"Authorization: Bearer IFM-14GIUCuAVfLjH8Wy\" -H \"Content-Type: application/json\" -d '{\"\"model\"\":\"\"K2-Chat\"\",\"\"messages\"\":[{\"\"role\"\":\"\"user\"\",\"\"content\"\":\"\"Say hello in one word\"\"}],\"\"max_tokens\"\":10}')",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(python:*)"
     ]
   }
 }

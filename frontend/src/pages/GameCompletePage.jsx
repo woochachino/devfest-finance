@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { gameData } from '../data/gameData';
+import MarketBackground from '../components/MarketBackground';
 import { getGameAnalysis } from '../services/k2ThinkApi';
 import Leaderboard, { saveScore } from '../components/Leaderboard';
 import GlobalLeaderboard from '../components/GlobalLeaderboard';
@@ -93,6 +94,9 @@ export default function GameCompletePage() {
 
     return (
         <div className="min-h-screen bg-[#0b0f19] text-slate-200 font-sans selection:bg-amber-500/30 overflow-x-hidden relative">
+            <MarketBackground />
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
+
             {/* Sticky Top Bar */}
             <header className="sticky top-0 z-40 bg-[#0b0f19]/80 backdrop-blur-xl border-b border-slate-800/50">
                 <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">

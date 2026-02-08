@@ -24,7 +24,7 @@ export default function Navbar() {
                 className="text-lg font-bold tracking-tight hover:opacity-80 transition-opacity"
             >
                 <span className="text-white">MARKET</span>
-                <span className="text-amber-400">MIND</span>
+                <span className="text-amber-400">RACE</span>
             </button>
 
             {/* Profile */}

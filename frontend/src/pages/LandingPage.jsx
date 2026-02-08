@@ -158,7 +158,7 @@ export default function LandingPage() {
                             </span>
                             <span className="relative inline-block ml-1">
                                 <span className="bg-gradient-to-br from-amber-300 via-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-lg animate-pulse-slow">
-                                    MIND
+                                    RACE
                                 </span>
                                 {/* Decorative underline */}
                                 <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full"></div>
@@ -376,7 +376,7 @@ export default function LandingPage() {
 
                 <footer className="w-full text-center border-t border-slate-800/50 py-8 bg-[#0b0f19]">
                     <div className="text-slate-600 text-xs font-mono uppercase tracking-widest">
-                        MARKETMIND TERMINAL v2.0 • SYSTEM ACTIVE • {new Date().getFullYear()}
+                        MARKETRACE TERMINAL v2.0 • SYSTEM ACTIVE • {new Date().getFullYear()}
                     </div>
                 </footer>
             </div>

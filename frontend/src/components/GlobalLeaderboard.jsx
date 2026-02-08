@@ -100,8 +100,8 @@ export default function GlobalLeaderboard() {
                         <button
                             onClick={() => setSelectedMode('all')}
                             className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide rounded transition-all ${selectedMode === 'all'
-                                    ? 'bg-slate-600 text-white shadow-sm'
-                                    : 'text-slate-500 hover:text-slate-300'
+                                ? 'bg-slate-600 text-white shadow-sm'
+                                : 'text-slate-500 hover:text-slate-300'
                                 }`}
                         >
                             All
@@ -109,8 +109,8 @@ export default function GlobalLeaderboard() {
                         <button
                             onClick={() => setSelectedMode('panic')}
                             className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide rounded transition-all ${selectedMode === 'panic'
-                                    ? 'bg-red-500/80 text-white shadow-sm'
-                                    : 'text-slate-500 hover:text-red-400'
+                                ? 'bg-red-500/80 text-white shadow-sm'
+                                : 'text-slate-500 hover:text-red-400'
                                 }`}
                         >
                             Panic
@@ -118,8 +118,8 @@ export default function GlobalLeaderboard() {
                         <button
                             onClick={() => setSelectedMode('chill')}
                             className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wide rounded transition-all ${selectedMode === 'chill'
-                                    ? 'bg-blue-500/80 text-white shadow-sm'
-                                    : 'text-slate-500 hover:text-blue-400'
+                                ? 'bg-blue-500/80 text-white shadow-sm'
+                                : 'text-slate-500 hover:text-blue-400'
                                 }`}
                         >
                             Chill
@@ -140,8 +140,8 @@ export default function GlobalLeaderboard() {
                             <div
                                 key={index}
                                 className={`p-4 transition-colors ${isUser
-                                        ? 'bg-amber-500/10 border-l-2 border-amber-500'
-                                        : 'hover:bg-slate-800/50'
+                                    ? 'bg-amber-500/10 border-l-2 border-amber-500'
+                                    : 'hover:bg-slate-800/50'
                                     }`}
                             >
                                 <div className="flex items-center justify-between gap-4">
@@ -150,7 +150,7 @@ export default function GlobalLeaderboard() {
                                         <div className="w-8 flex items-center justify-center">
                                             {getRankIcon(rank)}
                                         </div>
-                                        <div className="flex-1">
+                                        <div className="flex-1 text-left">
                                             <div className={`font-bold ${isUser ? 'text-amber-400' : 'text-white'}`}>
                                                 {entry.name}
                                                 {isUser && (

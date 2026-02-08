@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(python scripts/fetch_stock_data.py:*)",
+      "Bash(npx vite build:*)"
+    ]
+  }
+}

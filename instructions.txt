@@ -1,0 +1,426 @@
+# FinSight — Financial Signal Detection Game: Complete Project Specification
+
+## What This Is
+
+An educational finance game where players read curated financial documents (articles, tweets, reddit posts, reports, statistics) and use the signals within them to build a stock portfolio they believe will produce the highest returns. The twist: the AI engine already knows the actual historical returns and **works backward** to select documents that contain real, identifiable signals pointing toward those returns. After the player submits their portfolio, they get a full retrospective explaining the causal chains they should have caught.
+
+**Pitch framing:** This is an educational tool that teaches players how to identify signals in financial media for personal investing — NOT a trading simulator or a tool claiming to train microindicator detection.
+
+---
+
+## Core Game Loop
+
+```
+1. Player starts a round (Isolated Round mode)
+2. System selects a historical time window (e.g., Jan 2023 → Jun 2023)
+3. System selects 5-6 stocks spanning 2-3 sectors with varied actual returns
+4. System selects 8-12 curated documents from the database — these are the "clues"
+5. Player reads documents, analyzes signals
+6. Player is shown the stocks and allocates portfolio weights via sliders (must sum to 100%, representing a $1M allocation)
+7. Player submits
+8. Reveal: actual returns shown, player's portfolio return calculated as weighted sum
+9. Educational retrospective: system shows which documents mapped to which stocks, the causal chains, and what the optimal allocation would have been
+10. Score based on how close player's return was to the optimal
+```
+
+---
+
+## The Backward-Linkage Document Selection Engine (CRITICAL LOGIC)
+
+This is the core innovation. The system does NOT randomly pick documents about stocks. It works backward from known returns to select documents that contain genuine, identifiable signals.
+
+### How It Works Step-by-Step:
+
+**At build time (offline, one-time):**
+1. Every document in the database is pre-annotated by an LLM with structured metadata (see schema below)
+2. Historical stock returns are pre-computed for all tickers across all time windows
+3. A relevance table links documents to tickers/sectors with directional signals and causal chains
+
+**At game time (per round):**
+1. Pick a time window from the available set
+2. Pick 5-6 stocks for the round — ensure return spread (some winners, some losers, some flat) and sector diversity
+3. Query the document database:
+   - For each stock, find documents where `tickers_referenced` or `sectors_referenced` match
+   - Filter to documents published BEFORE the time window start (within ~90 days)
+   - Filter to documents where `signal_direction` ALIGNS with the stock's actual return direction (bullish docs for stocks that went up, bearish for stocks that went down)
+   - Score by `signal_strength × difficulty_weight` based on game difficulty
+   - Prefer variety in `source_type` (don't serve 5 tweets)
+   - Select top 2 documents per stock
+4. Add 1-2 sector-level macro documents (e.g., Fed policy, GDP data)
+5. Add 0-1 red herring (a document with mixed signals that could mislead)
+6. Shuffle all documents — do NOT label which stock they map to. Player must figure that out.
+
+The player's job: read documents, identify which signals point to which stocks/sectors, determine direction (bullish/bearish), and allocate weights accordingly.
+
+---
+
+## Database Schema
+
+### Table: `documents`
+
+```json
+{
+  "id": "string (unique)",
+  "source_type": "tweet | reddit | article | report | statistic | earnings_call",
+  "raw_text": "string (the actual document content shown to the player)",
+  "publish_date": "date",
+  "source_label": "string (display label, e.g., 'Reuters', 'r/wallstreetbets', '@analystname')",
+
+  // PRE-COMPUTED BY LLM AT INGESTION TIME:
+  "tickers_referenced": ["NVDA", "AAPL"],
+  "sectors_referenced": ["semiconductors", "big_tech"],
+  "signal_direction": "bullish | bearish | mixed",
+  "signal_strength": "1-5 (how clear is the directional signal)",
+  "signal_reasoning": "string (LLM-generated: what this document signals and why)",
+  "causal_chain": "string (LLM-generated: the logical chain from this document's content to expected stock movement, e.g., 'Fed hawkish → higher rates → growth stock compression → tech bearish')",
+  "keywords": ["rate hike", "inflation", "earnings miss"],
+  "difficulty": "easy | medium | hard (how subtle is the signal)"
+}
+```
+
+### Table: `stock_returns`
+
+```json
+{
+  "ticker": "NVDA",
+  "company_name": "NVIDIA Corporation",
+  "sector": "semiconductors",
+  "period_id": "string (links to a round/time window)",
+  "period_start": "2023-01-01",
+  "period_end": "2023-06-30",
+  "return_pct": 190.0
+}
+```
+
+### Table: `document_stock_relevance`
+
+This is the many-to-many linkage table. One document can be relevant to multiple stocks with different causal chains.
+
+```json
+{
+  "doc_id": "doc_042",
+  "ticker": "NVDA",
+  "relevance_type": "direct | sector | macro",
+  "signal_direction_for_this_ticker": "bullish",
+  "causal_chain_for_this_ticker": "AI chip demand surge from ChatGPT adoption → NVDA data center revenue growth → bullish"
+}
+```
+
+### Table: `round_configs`
+
+Pre-defined round setups (time windows + which stocks participate):
+
+```json
+{
+  "round_id": "ai_boom_2023",
+  "title": "The AI Boom",
+  "period_start": "2023-01-01",
+  "period_end": "2023-06-30",
+  "description": "ChatGPT has just launched. The market is repricing AI winners and losers.",
+  "tickers": ["NVDA", "MSFT", "GOOGL", "INTC", "SNAP", "IBM"],
+  "difficulty": "medium"
+}
+```
+
+### Table: `game_sessions`
+
+```json
+{
+  "session_id": "string",
+  "round_id": "string",
+  "player_allocations": { "NVDA": 0.30, "MSFT": 0.25, ... },
+  "player_return_pct": 85.5,
+  "optimal_return_pct": 120.3,
+  "score": 71,
+  "documents_served": ["doc_001", "doc_005", ...],
+  "created_at": "timestamp"
+}
+```
+
+---
+
+## Three Pre-Built Round Kits (Content to Build)
+
+### Round 1: The AI Boom Divergence (Jan 2023 → Jun 2023)
+
+**Theme:** Not all tech benefits equally from AI. Signals are about infrastructure vs. application layer and credibility of AI positioning.
+
+| Ticker | Sector | Return | Story |
+|---|---|---|---|
+| NVDA | Semiconductors | +190% | Direct AI infra winner, GPU demand |
+| MSFT | Big Tech | +40% | OpenAI partnership, Copilot |
+| GOOGL | Big Tech | +35% | Initially seen as AI loser (ChatGPT threat), recovered |
+| INTC | Semiconductors | +10% | Legacy chips, missed AI wave |
+| SNAP | Social Media | -15% | Ad revenue pressure, no AI story |
+| IBM | Enterprise Tech | +5% | Talked AI but market didn't buy it |
+
+**Documents to source/write (8-12):**
+1. NVDA earnings call excerpt (Q4 2022) — data center revenue acceleration commentary
+2. Reddit r/wallstreetbets post (Dec 2022-Feb 2023) — retail AI stock sentiment
+3. News article: Microsoft $10B OpenAI investment (Jan 2023)
+4. Article/tweet about Google "Code Red" internal panic (Dec 2022)
+5. Intel strategy/restructuring article (early 2023) — missing AI
+6. Snap earnings miss / ad market weakness (Q4 2022)
+7. Analyst piece: "Which companies actually benefit from AI?" (early 2023)
+8. Red herring: IBM WatsonX AI strategy announcement (early 2023)
+9. Macro: ChatGPT user growth milestone article (Jan-Feb 2023)
+
+### Round 2: Banking Crisis + Flight to Safety (Jan 2023 → Jun 2023)
+
+**Theme:** Rate environment → bond portfolio risk → bank vulnerability. Crisis = rotation into megacap quality and gold.
+
+| Ticker | Sector | Return | Story |
+|---|---|---|---|
+| JPM | Megabank | +15% | Too big to fail, absorbed First Republic |
+| SCHW | Financial Services | -30% | Same unrealized bond loss problem as SVB |
+| KRE (ETF) | Regional Banks | -30% | Entire sector crushed on contagion |
+| GLD (ETF) | Gold | +10% | Classic crisis safe haven |
+| AAPL | Big Tech | +50% | Quality megacap flight to safety |
+| PFE | Pharma | -20% | Post-COVID demand cliff, unrelated to banking |
+
+**Documents to source/write:**
+1. Article about banks' unrealized bond losses (late 2022) — the smoking gun
+2. SVB Moody's downgrade / deposit concentration warning (Feb-Mar 2023)
+3. Fed rate hike FOMC minutes (Jan-Feb 2023)
+4. Reddit/Twitter panic about SVB (March 9-10 2023)
+5. JPMorgan "fortress balance sheet" / Jamie Dimon interview (early 2023)
+6. Schwab bond portfolio exposure comparison to SVB (March 2023)
+7. Gold safe haven analysis (March 2023)
+8. Apple/big tech as safety trade narrative (early 2023)
+9. Red herring: "Banking crisis contained" reassurance article (mid-March 2023)
+
+### Round 3: Inflation Regime Change (Jan 2022 → Dec 2022)
+
+**Theme:** Zero rates ended. Growth crushed. Energy and value won. Most macro-driven round.
+
+| Ticker | Sector | Return | Story |
+|---|---|---|---|
+| XOM | Energy | +80% | Oil surge from Ukraine war + supply constraints |
+| META | Big Tech | -65% | Rate hikes + Metaverse spending backlash |
+| COST | Consumer Staples | -15% | Defensive but not immune |
+| DVN | Energy | +60% | Rode the oil wave |
+| AMZN | E-commerce | -50% | Post-COVID demand normalization + rate sensitive |
+| LMT | Defense | +35% | Ukraine war → defense spending |
+
+**Documents to source/write:**
+1. Fed hawkish pivot (Dec 2021 / Jan 2022 FOMC)
+2. CPI inflation data articles (Jan-Feb 2022)
+3. Russia-Ukraine invasion coverage (Feb 24 2022)
+4. Oil price surge / energy supply disruption (March 2022)
+5. Meta/Zuckerberg Metaverse spending backlash (early-mid 2022)
+6. "Growth stocks vulnerable to rate hikes" analysis (early 2022)
+7. Amazon post-COVID demand normalization (early 2022)
+8. NATO defense spending increase (March-April 2022)
+9. Red herring: "Buy the dip in tech" article (Q1 2022)
+
+---
+
+## Document Content Strategy
+
+**For hackathon speed: write synthetic but realistic documents based on real events for ~50% of the corpus.** You know what happened — write realistic-sounding tweets, reddit posts, article excerpts that capture the actual sentiment that existed at the time. This is legitimate because the signals are real; you're just writing the document form rather than scraping it.
+
+**For the other ~50%:** Pull real content from:
+- Seeking Alpha / Motley Fool for earnings recaps
+- FRED (fred.stlouisfed.org) for economic data
+- Federal Reserve website for FOMC statements
+- Articles (google news? etc.) with date filters for headlines + first paragraphs
+- Reddit archives (Pullpush / Arctic Shift) for actual posts
+- Tweets
+(you do NOT have to follow this to the T if it gets too complicated. )
+(but in not sure how to find the parts that are ACTUALLY relevant. might be too AI costly)
+(is there an optimal way to do this or shud we just stick to one media format)
+
+**Target total corpus: ~80-100 documents across all 3 rounds** (~25-35 per round, from which 8-12 are selected per game).
+
+---
+
+## LLM Annotation Pipeline (Build-Time, One-Time)
+
+Run this as a batch script during data prep. For each document:
+
+```
+Prompt to LLM:
+"Analyze this financial document published on [DATE]. Extract:
+1. Which specific tickers does it reference or strongly imply? (list)
+2. Which sectors does it relate to? (list)
+3. What directional signal does it imply — bullish, bearish, or mixed?
+4. Signal strength 1-5 (1 = very subtle, 5 = screaming obvious)
+5. Explain the causal reasoning chain: how does this document's content logically connect to expected stock/sector movement? Be specific. (e.g., 'Fed signals rate hikes → higher discount rates → growth stock valuations compress → bearish for high-P/E tech')
+6. How subtle vs. obvious is this signal for someone reading it? Rate difficulty: easy/medium/hard.
+7. Key financial keywords in this document."
+
+Save all fields to the document record in the database.
+```
+
+For the relevance table, run a second pass:
+
+```
+"Given this document and its signals, which of these specific tickers [list all tickers across all rounds] is it relevant to? For each relevant ticker, explain the specific causal chain from this document to that ticker's expected movement."
+```
+
+**Estimated cost: ~$5-15 for 100 documents with a cheap model (GPT-4o-mini or Claude Haiku).**
+
+---
+
+## Game-Time LLM Calls (Minimal)
+
+Only 1-2 LLM calls per round at game time:
+
+1. **Retrospective generation (after player submits):**
+   - Input: the documents served, the stocks, the actual returns, the player's allocation, the pre-stored causal chains
+   - Prompt: "Generate an educational retrospective explaining what signals the player should have caught, which documents were key, and how the causal chains connect documents to actual stock movements. Highlight what the player got right and what they missed. Tone: encouraging teacher, not condescending."
+
+2. **Optional: portfolio analysis** — brief AI commentary on the player's allocation strategy vs. optimal.
+
+---
+
+## Frontend Architecture
+
+**Stack: React (single-page app)**
+
+### Screen Flow:
+
+```
+Landing Page
+  → "Start Round" button
+  → Brief context screen (time period, market backdrop, what you're about to do)
+
+Document Reading 
+  → Card-based layout showing all 8-12 documents
+  → Each card shows: source type icon, source label, publish date, document text
+  → Player can click to expand/read full text
+  → Optional: highlight/annotate feature (nice-to-have)
+  → "I'm ready to invest" button when done reading
+
+Portfolio Allocation (should be split screen with document reading so users can make decisions while reading)
+  → Show all 5-6 stocks with: ticker, company name, sector tag
+  → Slider for each stock (0-100%), must sum to 100%
+  → Show total allocation as dollar amount ($1,000,000 base)
+  → Real-time validation: sliders must sum to 100%
+  -> 
+  → "Submit Portfolio" button
+
+Reveal Phase (animated)
+  → Show actual return for each stock (animate counting up/down)
+  → Calculate player's portfolio return (weighted sum)
+  → Show optimal portfolio return for comparison
+  → Score calculation
+
+Educational Retrospective Phase
+  → For each key document: show which stock(s) it related to and the causal chain
+  → Highlight the 2-3 most important signals the player should have caught
+  → LLM-generated narrative explaining the round's story
+  → "Play Another Round" button
+```
+
+### UI Components Needed:
+- `DocumentCard` — displays a single document with source type, date, text
+- `DocumentGrid` — grid/list of all documents for the round
+- `StockSlider` — single stock with name, sector, and weight slider
+- `PortfolioBuilder` — contains all StockSliders, enforces sum-to-100%
+- `ReturnReveal` — animated display of actual returns
+- `RetrospectiveView` — educational breakdown with document-to-stock mapping
+- `ScoreDisplay` — player score and comparison to optimal
+
+---
+
+## Backend Architecture
+
+**Stack: Python (FastAPI) or Node.js (Express)**
+
+### API Endpoints:
+
+```
+GET  /api/rounds                    → list available rounds
+POST /api/game/start                → start a new game session, returns round config + selected documents + stocks
+POST /api/game/submit               → submit player allocations, returns actual returns + score + retrospective
+GET  /api/game/:session_id/results  → get results for a completed session
+```
+
+### Key Backend Logic:
+
+**`start_game(round_id, difficulty)`:**
+1. Load round config (stocks, time window)
+2. Load actual returns for those stocks in that window
+3. Run document selection algorithm (database queries, no LLM):
+   - For each stock: query documents by ticker/sector relevance + date window + signal alignment
+   - Score and rank candidates
+   - Select top 2 per stock + 1-2 macro docs + 0-1 red herring
+   - Shuffle document order
+4. Create game session record
+5. Return: stocks (without returns), documents, session_id
+
+**`submit_portfolio(session_id, allocations)`:**
+1. Load game session + round config
+2. Retrieve actual returns
+3. Calculate player return: `sum(allocation[ticker] * return[ticker])` for each stock
+4. Calculate optimal return: 100% allocation to highest-returning stock (or constrained optimal with max 40% per stock for fairness)
+5. Calculate score: `max(0, 100 * player_return / optimal_return)` or similar formula
+6. Call LLM for retrospective generation (1 API call)
+7. Save results to game session
+8. Return: actual returns, player return, optimal return, score, retrospective, document-stock mappings with causal chains
+
+---
+
+## Scoring System
+
+```
+Player return = sum of (weight_i × return_i) for each stock
+Optimal return = best possible return given constraints (e.g., max 50% in any single stock)
+
+Score = function of how close player return is to optimal
+  - 100 points: player matched or beat optimal
+  - 0 points: player got negative return when optimal was positive
+  - Scale linearly or use percentile-based scoring
+
+
+---
+
+## Data Storage
+
+Give me instructions to use
+- **PostgreSQL** (if you want a proper DB, slightly more setup)
+
+Recommendation: **Start with JSON files for speed, migrate to SQLite/Postgres later if needed.**
+
+---
+
+## Implementation Priority Order
+
+### Phase 1: Data Foundation (DO THIS FIRST)
+1. Create the 3 round configs with stock lists and actual returns (hardcode or JSON)
+2. Write/collect 25-35 documents for Round 1 (AI Boom)
+3. Run LLM annotation batch on all Round 1 documents
+4. Build the document-stock relevance mappings
+5. Verify: manually check that the causal chains make sense
+
+### Phase 2: Core Engine
+6. Build the document selection algorithm (pure DB/JSON queries)
+7. Build the portfolio return calculator
+8. Build the scoring system
+9. Build the retrospective generation prompt + LLM call
+10. Test end-to-end: generate a round, verify document selection quality
+
+### Phase 3: Frontend
+11. Landing page + round selection
+12. Document reading interface (card grid)
+13. Portfolio allocation screen (sliders summing to 100%)
+14. Submit + reveal animation
+15. Retrospective/education screen
+
+### Phase 4: Polish
+16. Add Round 2 and Round 3 content
+17. Difficulty settings (filters signal_strength and difficulty in doc selection)
+18. Visual polish, animations, responsive design
+19. Score summary and share functionality
+
+---
+
+## Key Constraints & Edge Cases to Handle
+
+- **Sliders must sum to exactly 100%.** Implement auto-rebalancing or lock/unlock mechanism.
+- **Document selection must never reveal which stock a document maps to.** Shuffle order, don't group by stock.
+- **Red herrings are important.** Always include at least 1 mixed-signal document to prevent the game from being trivially solvable.
+- **Returns should have spread but not be TOO obvious.** If one stock returned +190% and everything else is negative, the game is too easy. Consider presenting return as a relative measure or capping display. Alternatively, choose stocks where multiple had strong positive returns so the decision is about WHICH winners to overweight.
+- **The retrospective is the product.** This is where the educational value lives. Invest heavily in the quality of the retrospective prompt — it should read like a great finance teacher explaining what happened.
+- **Optimal portfolio calculation needs a constraint** (e.g., max 50% in any single stock), otherwise optimal is always 100% in the top performer, which doesn't teach diversification thinking.

@@ -5,6 +5,9 @@ import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useGame } from '../context/GameContext';
 import MarketBackground from '../components/MarketBackground';
 import Navbar from '../components/Navbar';
+import Leaderboard from '../components/Leaderboard';
+import GlobalLeaderboard from '../components/GlobalLeaderboard';
+import { ChevronDown } from 'lucide-react';
 
 function AvatarModel() {
     const { scene } = useGLTF('/model.glb');
@@ -303,11 +306,53 @@ export default function LandingPage() {
                 </div>
             </div>
 
-            <footer className="absolute bottom-6 w-full text-center border-t border-slate-800/50 pt-4">
-                <div className="text-slate-600 text-xs font-mono uppercase tracking-widest">
-                    MARKETMIND TERMINAL v2.0 • SYSTEM ACTIVE • {new Date().getFullYear()}
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-20">
+                <ChevronDown className="w-8 h-8 text-slate-500 opacity-50" />
+            </div>
+
+            {/* Leaderboard Section - Below the fold */}
+            <div className="w-full bg-[#0b0f19] relative z-20 border-t border-slate-800/50">
+                <div className="max-w-6xl mx-auto px-6 py-24">
+                    <div className="text-center mb-16">
+                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
+                            Global Market Rankings
+                        </h2>
+                        <p className="text-slate-400 max-w-2xl mx-auto">
+                            See how you stack up against the best traders in the world.
+                            Track your progress and aim for the top.
+                        </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* Global Leaderboard */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between px-2">
+                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    Global Competition
+                                </h3>
+                            </div>
+                            <GlobalLeaderboard />
+                        </div>
+
+                        {/* Local Leaderboard */}
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between px-2">
+                                <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+                                    Your personal History
+                                </h3>
+                            </div>
+                            <Leaderboard />
+                        </div>
+                    </div>
                 </div>
-            </footer>
+
+                <footer className="w-full text-center border-t border-slate-800/50 py-8 bg-[#0b0f19]">
+                    <div className="text-slate-600 text-xs font-mono uppercase tracking-widest">
+                        MARKETMIND TERMINAL v2.0 • SYSTEM ACTIVE • {new Date().getFullYear()}
+                    </div>
+                </footer>
+            </div>
         </div>
     );
 }

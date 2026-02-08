@@ -51,108 +51,126 @@ export default function PortfolioPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="min-h-screen bg-[#0b0f19] text-slate-200 font-sans selection:bg-amber-500/30">
             {/* Panic Mode Timer */}
             {gameMode === 'panic' && (
-                <Timer duration={30} onTimeUp={handleTimeUp} />
+                <div className="fixed top-0 left-0 w-full h-1 z-50">
+                    <Timer duration={30} onTimeUp={handleTimeUp} />
+                </div>
             )}
 
-            {/* Header */}
-            <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700/50">
-                <div className="max-w-7xl mx-auto px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="px-3 py-1 bg-primary-500/10 border border-primary-500/30 rounded-full text-primary-400 text-sm font-medium">
-                                Round {currentRound}/3
-                            </div>
-                            <div>
-                                {/* Mystery Year: Hide specific title/year */}
-                                <h1 className="text-lg font-bold text-white">Mystery Scenario #{currentRound}</h1>
-                                <p className="text-sm text-slate-400">Time: Unknown Market Cycle</p>
-                            </div>
+            {/* Terminal Header */}
+            <header className="sticky top-0 z-40 bg-[#0b0f19] border-b border-slate-800">
+                <div className="max-w-[1600px] mx-auto px-4 h-14 flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${gameMode === 'panic' ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`}></div>
+                            <span className="font-mono text-xs text-slate-400 uppercase tracking-widest">
+                                {gameMode === 'panic' ? 'LIVE TRADING' : 'MARKET OPEN'}
+                            </span>
                         </div>
+                        <div className="h-4 w-[1px] bg-slate-800"></div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-mono text-amber-500 text-sm font-bold">SCENARIO 0{currentRound}</span>
+                            <span className="text-slate-600 text-xs uppercase tracking-wider">// MYSTERY CYCLE</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6">
                         <div className="text-right">
-                            <div className="text-sm text-slate-400">Portfolio Value</div>
-                            <div className="text-xl font-bold text-white tabular-nums">
+                            <div className="text-[10px] text-slate-500 uppercase tracking-wider">Net Liq Value</div>
+                            <div className="font-mono-numbers text-lg text-white font-bold tracking-tight">
                                 ${balance.toLocaleString('en-US')}
                             </div>
                         </div>
-                    </div>
-                    {/* Navigation Buttons for Portfolio */}
-                    <div className="absolute top-4 left-4 flex gap-2">
                         <button
                             onClick={() => navigate('/intro')}
-                            className="text-slate-400 hover:text-white transition-colors"
+                            className="text-xs font-mono text-slate-500 hover:text-white uppercase tracking-widest border border-slate-800 hover:border-slate-600 px-3 py-1 rounded"
                         >
-                            ← Back
+                            Abort
                         </button>
                     </div>
                 </div>
             </header>
 
-            {/* Main Content - Split Screen */}
-            <div className="max-w-7xl mx-auto px-6 py-6">
-                <div className="grid lg:grid-cols-5 gap-6">
-                    {/* Left Panel - Articles (40%) */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="sticky top-24">
-                            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                <span className="text-xl">📰</span>
-                                Market News & Sentiment
-                            </h2>
-                            <p className="text-sm text-slate-400 mb-4">
-                                These are real historical posts. Can you identify the market cycle?
-                            </p>
+            {/* Main Workspace */}
+            <div className="max-w-[1600px] mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-3.5rem)]">
 
-                            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
-                                {roundData.articles.map((article) => (
-                                    <ArticleCard key={article.id} article={article} />
-                                ))}
-                            </div>
-                        </div>
+                {/* Left Panel: News Wire (40%) */}
+                <div className="lg:col-span-5 flex flex-col h-full overflow-hidden bg-slate-900/50 border border-slate-800 rounded-sm">
+                    <div className="p-3 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center">
+                        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span className="text-lg">NEWS</span> WIRES
+                        </h2>
+                        <span className="text-[10px] font-mono text-slate-600">LIVE FEED • {roundData.articles.length} ITEMS</span>
                     </div>
 
-                    {/* Right Panel - Portfolio Builder (60%) */}
-                    <div className="lg:col-span-3 space-y-6">
-                        <div>
-                            <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                                <span className="text-xl">💼</span>
-                                Build Your Portfolio
-                            </h2>
-                            <p className="text-sm text-slate-400 mb-4">
-                                Allocate your ${balance.toLocaleString('en-US')} across these assets. You must allocate exactly 100%.
-                            </p>
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                        {roundData.articles.map((article) => (
+                            <div key={article.id} className="group transition-all duration-200 hover:bg-slate-800/50 rounded-sm">
+                                <ArticleCard article={article} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
-                            {/* Allocation Summary */}
+                {/* Right Panel: Order Entry (60%) */}
+                <div className="lg:col-span-7 flex flex-col h-full bg-slate-900/30 border border-slate-800 rounded-sm">
+                    <div className="p-3 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center">
+                        <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span className="text-lg">ORDER</span> ENTRY
+                        </h2>
+                        <span className="text-[10px] font-mono text-slate-600">ALLOCATION REQUIRED: 100%</span>
+                    </div>
+
+                    <div className="flex-1 p-6 overflow-y-auto">
+                        {/* Allocation Visualization */}
+                        <div className="mb-8 p-4 bg-slate-900 border border-slate-800 rounded-sm">
+                            <div className="flex justify-between items-center mb-4">
+                                <span className="text-xs text-slate-500 uppercase tracking-widest">Portfolio Exposure</span>
+                                <span className={`font-mono-numbers text-sm font-bold ${isComplete ? 'text-emerald-400' : 'text-amber-400'}`}>
+                                    {totalAllocation}% / 100%
+                                </span>
+                            </div>
                             <AllocationSummary />
                         </div>
 
-                        {/* Stock Sliders */}
-                        <div className="grid md:grid-cols-2 gap-4">
+                        {/* Order Tickets (Sliders) */}
+                        <div className="grid md:grid-cols-2 gap-4 mb-8">
                             {roundData.stocks.map((stock) => (
-                                <StockSlider key={stock.ticker} stock={stock} />
+                                <div key={stock.ticker} className="bg-slate-900 border border-slate-800 p-4 hover:border-slate-600 transition-colors">
+                                    <StockSlider stock={stock} />
+                                </div>
                             ))}
                         </div>
+                    </div>
 
-                        {/* Lock In Button */}
-                        <div className="sticky bottom-6 pt-4">
+                    {/* Execution Footer */}
+                    <div className="p-4 border-t border-slate-800 bg-slate-900/80">
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="text-xs text-slate-500 max-w-md">
+                                {isComplete ?
+                                    <span className="text-emerald-500 flex items-center gap-2">
+                                        ✓ PORTFOLIO BALANCED. READY FOR EXECUTION.
+                                    </span>
+                                    :
+                                    <span className="text-amber-500 flex items-center gap-2 animate-pulse">
+                                        ⚠ IMBALANCED PORTFOLIO. ADJUST EXPECTATIONS.
+                                    </span>
+                                }
+                            </div>
+
                             <button
                                 onClick={handleLockIn}
                                 disabled={!isComplete}
-                                className={`btn-primary w-full text-lg py-4 flex items-center justify-center gap-2 ${!isComplete ? 'opacity-50 cursor-not-allowed' : ''
-                                    }`}
+                                className={`
+                                    px-8 py-4 font-bold tracking-widest uppercase text-sm transition-all duration-200
+                                    ${isComplete
+                                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 hover:scale-[1.02]'
+                                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'}
+                                `}
                             >
-                                {isComplete ? (
-                                    <>
-                                        <span>🔒</span>
-                                        <span>Lock In Portfolio</span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <span>⚠️</span>
-                                        <span>Allocate exactly 100% to continue</span>
-                                    </>
-                                )}
+                                {isComplete ? 'EXECUTE ORDER' : 'AWAITING INPUT'}
                             </button>
                         </div>
                     </div>

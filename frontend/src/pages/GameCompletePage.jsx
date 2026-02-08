@@ -1,9 +1,11 @@
 // GameCompletePage - Final summary after all 3 rounds
 
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { gameData } from '../data/gameData';
 
 export default function GameCompletePage() {
+    const navigate = useNavigate();
     const { balance, roundHistory, resetGame } = useGame();
 
     const initialBalance = gameData.initialBalance;
@@ -126,7 +128,10 @@ export default function GameCompletePage() {
 
                     {/* Play Again */}
                     <button
-                        onClick={resetGame}
+                        onClick={() => {
+                            resetGame();
+                            navigate('/');
+                        }}
                         className="btn-primary w-full text-lg py-4 flex items-center justify-center gap-2"
                     >
                         <span>🔄</span>

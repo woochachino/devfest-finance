@@ -1,5 +1,13 @@
+import { Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useGame } from '../context/GameContext';
+
+function AvatarModel() {
+    const { scene } = useGLTF('/model.glb');
+    return <primitive object={scene} scale={1.7} position={[0, 0, 0]} />;
+}
 
 export default function LandingPage() {
     const { startGame } = useGame();
@@ -12,34 +20,74 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
-            <div className="max-w-4xl w-full animate-fade-in">
+            <div className="max-w-5xl w-full animate-fade-in">
                 {/* Hero Section */}
-                <h1 className="text-6xl md:text-8xl font-black mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-gradient-x">
+                <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-gradient-x">
                     MarketMind
                 </h1>
 
-                <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
                     Master the psychology of investing.
                     <br />
                     Navigate real historical market scenarios and defeat your biases.
                 </p>
 
-                {/* Features Grid */}
-                <div className="grid md:grid-cols-3 gap-8 mb-16 text-left">
-                    <div className="glass-card p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-lg transform hover:-translate-y-1 transition-transform duration-300">
-                        <div className="text-4xl mb-4">📜</div>
-                        <h3 className="text-lg font-bold mb-2 text-blue-300">Real History</h3>
-                        <p className="text-slate-400 text-sm">Experience actual market events as they happened. Can you beat history?</p>
+                {/* Stats + Avatar Row */}
+                <div className="w-full max-w-4xl mx-auto mb-8 -mt-2 flex items-center gap-0 justify-center">
+                    {/* Stats Panel - Left */}
+                    <div className="flex-shrink-0 w-40 text-left flex flex-col justify-between h-[450px] py-4 mr-[-1rem]">
+                        <div className="px-3 py-2">
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Level</div>
+                            <div className="text-base font-bold text-white">1 <span className="text-[11px] font-normal text-slate-400">/ Rookie</span></div>
+                        </div>
+                        <div className="px-3 py-2">
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500">High Score</div>
+                            <div className="text-base font-bold text-emerald-400">$0</div>
+                        </div>
+                        <div className="px-3 py-2">
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Investor Type</div>
+                            <div className="text-base font-bold text-purple-400">Undiscovered</div>
+                        </div>
+                        <div className="px-3 py-2">
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Fav. Gamemode</div>
+                            <div className="text-base font-bold text-blue-400">--</div>
+                        </div>
+                        <div className="px-3 py-2">
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Rounds Played</div>
+                            <div className="text-base font-bold text-white">0</div>
+                        </div>
                     </div>
-                    <div className="glass-card p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-lg transform hover:-translate-y-1 transition-transform duration-300 delay-100">
-                        <div className="text-4xl mb-4">🧠</div>
-                        <h3 className="text-lg font-bold mb-2 text-purple-300">Behavioral AI</h3>
-                        <p className="text-slate-400 text-sm">Get analyzed by K2 Think's advanced AI to uncover your investing biases.</p>
-                    </div>
-                    <div className="glass-card p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-lg transform hover:-translate-y-1 transition-transform duration-300 delay-200">
-                        <div className="text-4xl mb-4">🏆</div>
-                        <h3 className="text-lg font-bold mb-2 text-pink-300">High Score</h3>
-                        <p className="text-slate-400 text-sm">Compete for the best portfolio returns across 3 challenging rounds.</p>
+
+                    {/* 3D Avatar - Right */}
+                    <div className="w-[400px] flex-shrink-0 h-[450px]">
+                        <Suspense fallback={
+                            <div className="h-full flex items-center justify-center">
+                                <div className="text-center">
+                                    <div className="text-9xl mb-6 animate-bounce">👨‍💼</div>
+                                    <div className="text-slate-400 text-lg">Loading your avatar...</div>
+                                </div>
+                            </div>
+                        }>
+                            <Canvas camera={{ position: [0, 0.5, 4.5], fov: 50 }} style={{ background: 'transparent' }}>
+                                <ambientLight intensity={1.8} />
+                                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" />
+                                <directionalLight position={[-5, 5, -3]} intensity={1.2} color="#94a3b8" />
+                                <spotLight position={[0, 10, 8]} angle={0.3} penumbra={1} intensity={2} color="#ffffff" />
+                                <pointLight position={[-3, 2, 4]} intensity={1} color="#60a5fa" />
+                                <pointLight position={[3, -1, 3]} intensity={0.8} color="#a78bfa" />
+                                <hemisphereLight args={['#bfdbfe', '#1e293b', 1]} />
+                                <AvatarModel />
+                                <OrbitControls
+                                    enableZoom={false}
+                                    enablePan={false}
+                                    minPolarAngle={Math.PI / 3}
+                                    maxPolarAngle={Math.PI / 1.8}
+                                    autoRotate={true}
+                                    autoRotateSpeed={1}
+                                />
+                            </Canvas>
+                        </Suspense>
+
                     </div>
                 </div>
 

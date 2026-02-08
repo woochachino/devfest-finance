@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage';
 import RoundIntroPage from './pages/RoundIntroPage';
 import PortfolioPage from './pages/PortfolioPage';
 import ResultsPage from './pages/ResultsPage';
+import GameCompletePage from './pages/GameCompletePage';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                     <Route path="/intro" element={<RoundIntroPage />} />
                     <Route path="/portfolio" element={<PortfolioPage />} />
                     <Route path="/results" element={<ResultsPage />} />
+                    <Route path="/complete" element={<GameCompletePage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </Router>

@@ -176,7 +176,6 @@ export function GameProvider({ children }) {
         lockInPortfolio,
         setPreAnalysis,
         setDebrief,
-        setDebrief,
         setGamePhase,
         setGameMode,
 

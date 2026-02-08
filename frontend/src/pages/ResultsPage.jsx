@@ -16,6 +16,7 @@ export default function ResultsPage() {
         allocations,
         getCurrentRoundData,
         advanceToNextRound,
+        resetGame,
         preAnalysis,
         setPreAnalysis,
         debrief,
@@ -26,8 +27,13 @@ export default function ResultsPage() {
     const roundData = getCurrentRoundData();
 
     const handleContinue = () => {
-        advanceToNextRound();
-        navigate('/intro');
+        if (currentRound >= 3) {
+            advanceToNextRound();
+            navigate('/complete');
+        } else {
+            advanceToNextRound();
+            navigate('/intro');
+        }
     };
 
     const handleHome = () => {

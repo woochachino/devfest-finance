@@ -1,5 +1,6 @@
 // PortfolioPage - Split screen with articles and stock allocation
 
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import ArticleCard from '../components/ArticleCard';
 import StockSlider from '../components/StockSlider';
@@ -14,9 +15,15 @@ export default function PortfolioPage() {
         lockInPortfolio
     } = useGame();
 
+    const navigate = useNavigate();
     const roundData = getCurrentRoundData();
     const totalAllocation = getTotalAllocation();
     const isComplete = totalAllocation === 100;
+
+    const handleLockIn = () => {
+        lockInPortfolio();
+        navigate('/results');
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -90,7 +97,7 @@ export default function PortfolioPage() {
                         {/* Lock In Button */}
                         <div className="sticky bottom-6 pt-4">
                             <button
-                                onClick={lockInPortfolio}
+                                onClick={handleLockIn}
                                 disabled={!isComplete}
                                 className={`btn-primary w-full text-lg py-4 flex items-center justify-center gap-2 ${!isComplete ? 'opacity-50 cursor-not-allowed' : ''
                                     }`}

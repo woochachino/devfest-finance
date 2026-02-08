@@ -1,15 +1,19 @@
 // WelcomePage - Shows round info, context, and start button
 
+import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 
 export default function WelcomePage() {
-    const { currentRound, balance, getCurrentRoundData, startRound, gamePhase, roundHistory } = useGame();
+    const { currentRound, balance, getCurrentRoundData, startRound, roundHistory } = useGame();
+    const navigate = useNavigate();
     const roundData = getCurrentRoundData();
 
-    // Calculate performance from previous rounds
-    const previousRoundReturn = roundHistory.length > 0
-        ? ((balance - 10000) / 10000 * 100).toFixed(1)
-        : null;
+    const handleStart = () => {
+        startRound();
+        navigate('/portfolio');
+    };
+
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
@@ -27,11 +31,7 @@ export default function WelcomePage() {
                         <div className="text-4xl font-bold text-white tabular-nums">
                             ${balance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </div>
-                        {previousRoundReturn && (
-                            <div className={`text-sm mt-2 ${parseFloat(previousRoundReturn) >= 0 ? 'text-gain-400' : 'text-loss-400'}`}>
-                                {parseFloat(previousRoundReturn) >= 0 ? '↑' : '↓'} {previousRoundReturn}% overall return
-                            </div>
-                        )}
+
                     </div>
                 </div>
 
@@ -79,7 +79,7 @@ export default function WelcomePage() {
 
                     {/* Start Button */}
                     <button
-                        onClick={startRound}
+                        onClick={handleStart}
                         className="btn-primary w-full text-lg py-4 flex items-center justify-center gap-2"
                     >
                         <span>Start Round {currentRound}</span>

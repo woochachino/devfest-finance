@@ -1,4 +1,4 @@
-// GameCompletePage - Final summary with constellation journey map + K2 Think AI analysis
+// GameCompletePage - Final summary with constellation journey map + Gemini AI analysis
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -123,8 +123,8 @@ export default function GameCompletePage() {
                 {k2Loading ? (
                     <div className="mb-6 bg-slate-900/60 border border-slate-800/50 rounded-xl p-8 backdrop-blur-sm animate-slide-up">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-xs font-black text-white">K2</div>
-                            <div className="text-sm text-slate-400">Analyzing your decisions...</div>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-[8px] font-black text-white">AI</div>
+                            <div className="text-sm text-slate-400">Gemini is analyzing your decisions...</div>
                             <div className="flex gap-1 ml-auto">
                                 {[0, 1, 2].map(i => (
                                     <div key={i} className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-bounce" style={{ animationDelay: `${i * 150}ms` }} />
@@ -142,7 +142,7 @@ export default function GameCompletePage() {
                                 </div>
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-[9px] font-black text-white">K2</div>
+                                        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-[8px] font-black text-white">AI</div>
                                         <span className="text-xs text-slate-500 uppercase tracking-widest">AI Assessment</span>
                                     </div>
                                     <p className="text-slate-300 text-sm leading-relaxed">{k2Analysis.overall_summary}</p>

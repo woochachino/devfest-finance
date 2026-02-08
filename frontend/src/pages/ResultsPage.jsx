@@ -257,6 +257,7 @@ export default function ResultsPage() {
                                 allocations={allocations}
                                 initialBalance={results?.initialBalance ?? 10000}
                                 onAnimationComplete={handleGraphComplete}
+                                roundMeta={roundData}
                             />
                         </div>
                     </section>

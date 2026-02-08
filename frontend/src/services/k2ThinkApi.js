@@ -1,76 +1,72 @@
-// K2 Think API Service — Real integration with MBZUAI K2 Think LLM
+// Gemini API Service — Google Gemini 2.5 Flash for game analysis
 
-const K2_API_URL = import.meta.env.VITE_K2_API_URL || '/k2api/v1/chat/completions';
-const K2_API_KEY = import.meta.env.VITE_K2_API_KEY || '';
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 /**
- * Call K2 Think API for end-of-game analysis.
+ * Call Gemini API for end-of-game analysis.
  * Sends full round history (articles, allocations, results) and gets back
  * personalized teaching with document snippets, bias detection, and lessons.
  */
 export async function getGameAnalysis(roundHistory, gameRounds) {
     const prompt = buildAnalysisPrompt(roundHistory, gameRounds);
 
-    if (!K2_API_KEY) {
-        console.error('ERROR: No K2 API key');
-        return null;
-    }
-
     try {
-        const response = await fetch(K2_API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${K2_API_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                model: 'MBZUAI-IFM/K2-Think-v2',
-                messages: [
-                    {
-                        role: 'system',
-                        content: `You are an expert financial educator analyzing a player's investment decisions in MarketMind, a stock market simulation game. The player read real news articles and allocated a portfolio across stocks in 3 historical market rounds.
+        const systemInstruction = `You are an expert financial educator analyzing a player's investment decisions in MarketMind, a stock market simulation game. The player read real news articles and allocated a portfolio across stocks in historical market rounds.
 
 Your job: provide insightful, specific, educational feedback that teaches them how to read financial signals from news articles. Reference SPECIFIC articles and quotes. Explain what the signals indicated and whether the player acted on them or missed them.
 
-You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanation outside the JSON). Follow the exact schema provided.`,
+You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanation outside the JSON). Follow the exact schema provided.`;
+
+        const response = await fetch(GEMINI_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                system_instruction: {
+                    parts: [{ text: systemInstruction }],
+                },
+                contents: [
+                    {
+                        role: 'user',
+                        parts: [{ text: prompt }],
                     },
-                    { role: 'user', content: prompt },
                 ],
-                max_tokens: 8000,
-                temperature: 0.7,
-                stream: false,
+                generationConfig: {
+                    maxOutputTokens: 8000,
+                    temperature: 0.7,
+                    thinkingConfig: { thinkingBudget: 2048 },
+                },
             }),
         });
 
         if (!response.ok) {
             const errText = await response.text();
-            console.error('K2 API error:', response.status, errText);
+            console.error('Gemini API error:', response.status, errText);
             return getMockAnalysis(roundHistory, gameRounds);
         }
 
         const data = await response.json();
-        const content = data.choices?.[0]?.message?.content;
+        const parts = data.candidates?.[0]?.content?.parts || [];
 
-        if (!content) {
-            console.error('K2 API returned empty content');
+        // Gemini 2.5 Flash returns thinking in a separate part with `thought: true`
+        let reasoning = '';
+        let raw = '';
+        for (const part of parts) {
+            if (part.thought) {
+                reasoning += (reasoning ? '\n' : '') + part.text;
+            } else if (part.text) {
+                raw += part.text;
+            }
+        }
+
+        if (!raw) {
+            console.error('Gemini API returned empty content');
             return getMockAnalysis(roundHistory, gameRounds);
         }
 
-        // Parse JSON from the response — extract reasoning + answer
-        let raw = content.trim();
-
-        // K2-Think-v2 outputs: <think>reasoning</think> then the JSON answer.
-        // Extract the reasoning so we can show it to the user.
-        let reasoning = '';
-        const thinkEnd = raw.lastIndexOf('</think>');
-        if (thinkEnd !== -1) {
-            const thinkStart = raw.indexOf('<think>');
-            reasoning = raw.substring(
-                thinkStart !== -1 ? thinkStart + '<think>'.length : 0,
-                thinkEnd
-            ).trim();
-            raw = raw.substring(thinkEnd + '</think>'.length).trim();
-        }
+        raw = raw.trim();
 
         // Strip markdown fences
         if (raw.startsWith('```')) {
@@ -84,14 +80,13 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanati
         }
 
         const parsed = JSON.parse(raw);
-        // Attach K2's reasoning so the UI can display it
+        // Attach reasoning so the UI can display it
         if (reasoning) {
             parsed._k2_reasoning = reasoning;
         }
         return parsed;
     } catch (err) {
-        console.error('K2 Think API call failed:', err);
-        console.error('Raw content was:', content?.substring(0, 500));
+        console.error('Gemini API call failed:', err);
         return getMockAnalysis(roundHistory, gameRounds);
     }
 }

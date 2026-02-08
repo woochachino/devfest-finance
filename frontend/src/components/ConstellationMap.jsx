@@ -82,7 +82,7 @@ export default function ConstellationMap({
         }));
     }, [roundHistory.length]);
 
-    // ── K2 round analysis lookup ─────────────────────────────────
+    // ── Gemini round analysis lookup ──────────────────────────────
     const raMap = useMemo(() => {
         if (!k2Analysis?.round_analyses) return {};
         return Object.fromEntries(k2Analysis.round_analyses.map(ra => [ra.round, ra]));
@@ -311,7 +311,7 @@ export default function ConstellationMap({
                                     fontWeight="800"
                                     fontFamily="'Inter', sans-serif"
                                 >
-                                    R{rh.round}
+                                    R{i + 1}
                                 </text>
 
                                 {/* Return label below node */}
@@ -350,7 +350,7 @@ export default function ConstellationMap({
                         >
                             <div className="bg-slate-900/95 backdrop-blur-md border border-slate-700/60 rounded-lg px-4 py-3 shadow-xl shadow-black/40 min-w-[180px]">
                                 <div className="flex items-center justify-between gap-3 mb-1.5">
-                                    <div className="text-xs font-bold text-white truncate">{rd?.title || `Round ${rh.round}`}</div>
+                                    <div className="text-xs font-bold text-white truncate">{rd?.title || `Round ${hoveredNode + 1}`}</div>
                                     {ra && (
                                         <span className={`text-xs font-black ${gradeColor(ra.grade)}`}>{ra.grade}</span>
                                     )}
@@ -388,7 +388,7 @@ export default function ConstellationMap({
                                     </div>
                                 )}
                                 <div>
-                                    <div className="font-bold text-white">Round {selRound.round}: {selRoundData?.title}</div>
+                                    <div className="font-bold text-white">Round {selectedNode + 1}: {selRoundData?.title}</div>
                                     <div className="text-xs text-slate-500">{selRoundData?.period}</div>
                                 </div>
                             </div>
@@ -439,7 +439,7 @@ export default function ConstellationMap({
                                     <div className="w-6 h-6 rounded-md bg-violet-500/20 flex items-center justify-center">
                                         <div className="w-3 h-3 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
                                     </div>
-                                    <span className="text-sm text-slate-400">K2 is analyzing your decisions...</span>
+                                    <span className="text-sm text-slate-400">Gemini is analyzing your decisions...</span>
                                 </div>
                                 <div className="space-y-3">
                                     {[1, 2, 3].map(j => (
@@ -523,7 +523,7 @@ export default function ConstellationMap({
                                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                             </svg>
-                                            <span className="font-semibold">K2&apos;s Reasoning Process</span>
+                                            <span className="font-semibold">Gemini&apos;s Reasoning Process</span>
                                             <svg className={`w-3 h-3 transition-transform ${showReasoning ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                             </svg>

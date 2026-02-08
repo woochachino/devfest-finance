@@ -11,13 +11,25 @@ import {
 } from 'recharts';
 import { stockPrices } from '../data/stockPrices';
 
-function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
+function computePortfolioTimeSeries(roundId, allocations, initialBalance, roundMeta) {
     const roundData = stockPrices[roundId];
-    if (!roundData) return [];
 
+    // If real price data exists, use it
+    if (roundData) {
+        return computeFromRealPrices(roundData, allocations, initialBalance);
+    }
+
+    // Otherwise generate synthetic curve from stock returns
+    if (roundMeta) {
+        return computeSyntheticSeries(roundMeta, allocations, initialBalance);
+    }
+
+    return [];
+}
+
+function computeFromRealPrices(roundData, allocations, initialBalance) {
     const allTickers = Object.keys(roundData.tickers);
 
-    // Build price lookup: { NVDA: { "2023-01-03": 143.15, ... }, ... }
     const priceLookup = {};
     const initialPrices = {};
     allTickers.forEach((ticker) => {
@@ -27,7 +39,6 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
         });
     });
 
-    // Collect all unique dates, sorted
     const dateSet = new Set();
     allTickers.forEach((ticker) => {
         roundData.tickers[ticker].forEach((p) => dateSet.add(p.date));
@@ -36,13 +47,11 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
 
     if (dates.length === 0) return [];
 
-    // Get day-0 prices
     const firstDate = dates[0];
     allTickers.forEach((ticker) => {
         initialPrices[ticker] = priceLookup[ticker][firstDate];
     });
 
-    // Track last known prices for forward-fill
     const lastKnown = {};
     allTickers.forEach((t) => {
         lastKnown[t] = initialPrices[t];
@@ -62,6 +71,62 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
             playerValue += (alloc / 100) * initialBalance * priceRatio;
         });
 
+        return {
+            date,
+            player: Math.round(playerValue * 100) / 100,
+        };
+    });
+}
+
+// Generate a synthetic time series when real price data isn't available.
+// Uses each stock's final return to create a realistic-looking curve with some noise.
+function computeSyntheticSeries(roundMeta, allocations, initialBalance) {
+    const start = new Date(roundMeta.period_start + 'T00:00:00');
+    const end = new Date(roundMeta.period_end + 'T00:00:00');
+    if (isNaN(start) || isNaN(end)) return [];
+
+    // Generate ~22 trading days per month between start and end
+    const dates = [];
+    const cur = new Date(start);
+    while (cur <= end) {
+        const day = cur.getDay();
+        if (day !== 0 && day !== 6) {
+            dates.push(cur.toISOString().slice(0, 10));
+        }
+        cur.setDate(cur.getDate() + 1);
+    }
+
+    if (dates.length < 2) return [];
+    const totalSteps = dates.length - 1;
+
+    // Seed a simple deterministic RNG from round id for consistent results
+    let seed = roundMeta.id * 9301 + 49297;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+
+    // For each stock, generate a path from 1.0 to (1 + return/100)
+    const stockPaths = {};
+    (roundMeta.stocks || []).forEach((stock) => {
+        const finalReturn = stock.return / 100;
+        const dailyDrift = finalReturn / totalSteps;
+        const path = [1.0];
+        for (let i = 1; i <= totalSteps; i++) {
+            const noise = (rand() - 0.5) * 0.02; // small daily noise
+            const prev = path[i - 1];
+            let next = prev + dailyDrift + noise;
+            // On the last day, snap to exact final return
+            if (i === totalSteps) next = 1 + finalReturn;
+            path.push(next);
+        }
+        stockPaths[stock.ticker] = path;
+    });
+
+    return dates.map((date, i) => {
+        let playerValue = 0;
+        (roundMeta.stocks || []).forEach((stock) => {
+            const alloc = allocations[stock.ticker] || 0;
+            const ratio = stockPaths[stock.ticker]?.[i] ?? 1;
+            playerValue += (alloc / 100) * initialBalance * ratio;
+        });
         return {
             date,
             player: Math.round(playerValue * 100) / 100,
@@ -97,10 +162,10 @@ function CustomTooltip({ active, payload, label }) {
     );
 }
 
-export default function PortfolioGraph({ roundId, allocations, initialBalance = 10000, onAnimationComplete }) {
+export default function PortfolioGraph({ roundId, allocations, initialBalance = 10000, onAnimationComplete, roundMeta }) {
     const data = useMemo(
-        () => computePortfolioTimeSeries(roundId, allocations, initialBalance),
-        [roundId, allocations, initialBalance]
+        () => computePortfolioTimeSeries(roundId, allocations, initialBalance, roundMeta),
+        [roundId, allocations, initialBalance, roundMeta]
     );
 
     if (!data.length) {

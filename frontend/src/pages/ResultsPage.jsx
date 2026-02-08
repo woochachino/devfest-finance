@@ -27,7 +27,7 @@ export default function ResultsPage() {
 
     const handleContinue = () => {
         advanceToNextRound();
-        navigate('/');
+        navigate('/game-start');
     };
 
     // UI State

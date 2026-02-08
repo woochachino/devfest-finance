@@ -4,9 +4,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGame } from '../context/GameContext';
-import { getPreDecisionAnalysis, getEducationalDebrief } from '../services/k2ThinkApi';
-import K2ThinkAnalysis from '../components/K2ThinkAnalysis';
-import K2ThinkDebrief from '../components/K2ThinkDebrief';
 import StockResultCard from '../components/StockResultCard';
 import StockIcon from '../components/StockIcon';
 import LoadingScreen from '../components/LoadingScreen';
@@ -44,10 +41,6 @@ export default function ResultsPage() {
         getCurrentRoundData,
         advanceToNextRound,
         resetGame,
-        preAnalysis,
-        setPreAnalysis,
-        debrief,
-        setDebrief,
     } = useGame();
 
     const navigate = useNavigate();
@@ -82,38 +75,20 @@ export default function ResultsPage() {
     const cashTargetRef = useRef(null);
     const graphSectionRef = useRef(null);
     const revealRef = useRef(null);
-    const metricsRef = useRef(null);
 
     // UI State — sequential reveal
     const [showAnimation, setShowAnimation] = useState(true);
     const [showHero, setShowHero] = useState(false);
     const [showGraph, setShowGraph] = useState(false);
     const [showReveal, setShowReveal] = useState(false);
-    const [showResults, setShowResults] = useState(false);
-    const [showDebrief, setShowDebrief] = useState(false);
     const [showParticles, setShowParticles] = useState(false);
     const [particlesDone, setParticlesDone] = useState(false);
     const [cashAnimDone, setCashAnimDone] = useState(false);
-    const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(true);
-    const [isLoadingDebrief, setIsLoadingDebrief] = useState(false);
 
     const isPositive = results ? results.overallReturn >= 0 : true;
     const pnl = results ? results.finalBalance - results.initialBalance : 0;
 
-    // Fetch pre-decision analysis in parallel (start immediately)
-    useEffect(() => {
-        const fetchAnalysis = async () => {
-            setIsLoadingAnalysis(true);
-            try {
-                const analysis = await getPreDecisionAnalysis(allocations, roundData.articles, roundData);
-                setPreAnalysis(analysis);
-            } catch (error) {
-                console.error('Failed to fetch analysis:', error);
-            }
-            setIsLoadingAnalysis(false);
-        };
-        fetchAnalysis();
-    }, [allocations, roundData, setPreAnalysis]);
+    // Analysis now happens on GameCompletePage via K2 Think API
 
     // Loading screen complete → show hero with big return + cash counter
     const handleAnimationComplete = () => {
@@ -159,28 +134,12 @@ export default function ResultsPage() {
             { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
     }, [showReveal]);
 
-    // Graph animation complete → cascade reveal
+    // Graph animation complete → show continue button
     const handleGraphComplete = () => {
         setShowReveal(true);
-        setTimeout(() => {
-            setShowResults(true);
-            setTimeout(() => {
-                setShowDebrief(true);
-                fetchDebrief();
-            }, 1000);
-        }, 1500);
     };
 
-    const fetchDebrief = async () => {
-        setIsLoadingDebrief(true);
-        try {
-            const debriefData = await getEducationalDebrief(allocations, results, roundData);
-            setDebrief(debriefData);
-        } catch (error) {
-            console.error('Failed to fetch debrief:', error);
-        }
-        setIsLoadingDebrief(false);
-    };
+    // Debrief now happens on GameCompletePage via K2 Think API
 
     if (showAnimation) {
         return <LoadingScreen onComplete={handleAnimationComplete} />;

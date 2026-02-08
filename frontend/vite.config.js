@@ -10,6 +10,11 @@ export default defineConfig({
         target: 'http://localhost:8000',
         changeOrigin: true,
       },
+      '/k2api': {
+        target: 'https://api.mbzuai.ae',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/k2api/, ''),
+      },
     },
   },
 })

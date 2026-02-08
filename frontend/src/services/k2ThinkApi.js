@@ -274,7 +274,9 @@ function getMockAnalysis(roundHistory, gameRounds) {
     };
 }
 
-// ─── Re-export stock info (unchanged) ────────────────────────────────────────
+// ─── Re-export stock info (with backend API fallback) ───────────────────────
+
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 const stockInfoDatabase = {
     NVDA: { sector: 'Semiconductors', description: 'Designs GPUs and AI accelerator chips. Dominates the AI training hardware market with 80%+ share.' },
@@ -307,8 +309,41 @@ const stockInfoDatabase = {
     SPY: { sector: 'Index Fund', description: 'S&P 500 ETF tracking the 500 largest US companies. The benchmark for US equity markets.' },
 };
 
+// Cache for dynamically fetched stock info
+const stockInfoCache = {};
+
 export async function getStockInfo(ticker) {
-    return stockInfoDatabase[ticker] || { sector: 'Unknown', description: 'Stock information not available.' };
+    // First check local database (fast)
+    if (stockInfoDatabase[ticker]) {
+        return stockInfoDatabase[ticker];
+    }
+
+    // Check cache for previously fetched stocks
+    if (stockInfoCache[ticker]) {
+        return stockInfoCache[ticker];
+    }
+
+    // Fetch from backend API (uses Gemini for sector/description)
+    if (API_BASE) {
+        try {
+            const response = await fetch(`${API_BASE}/api/stocks/${ticker}/info`);
+            if (response.ok) {
+                const info = await response.json();
+                // Cache the result
+                stockInfoCache[ticker] = { sector: info.sector, description: info.description };
+                return stockInfoCache[ticker];
+            }
+        } catch (error) {
+            console.warn(`Failed to fetch stock info for ${ticker}:`, error);
+        }
+    }
+
+    // Final fallback - use a generic description based on ticker
+    return {
+        sector: 'Technology', // Default to Technology instead of Unknown
+        description: `${ticker} is a publicly traded company. Visit the investor relations page for more details.`
+    };
 }
 
 export default { getGameAnalysis, getStockInfo };
+

@@ -12,8 +12,8 @@ export async function getGameAnalysis(roundHistory, gameRounds) {
     const prompt = buildAnalysisPrompt(roundHistory, gameRounds);
 
     if (!K2_API_KEY) {
-        console.warn('No K2 API key — using mock analysis');
-        return getMockAnalysis(roundHistory, gameRounds);
+        console.error('ERROR: No K2 API key');
+        return null;
     }
 
     try {

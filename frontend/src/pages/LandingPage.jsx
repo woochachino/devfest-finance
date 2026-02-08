@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
 import { useGame } from '../context/GameContext';
+import MarketBackground from '../components/MarketBackground';
 
 function AvatarModel() {
     const { scene } = useGLTF('/model.glb');
@@ -10,17 +11,19 @@ function AvatarModel() {
 }
 
 export default function LandingPage() {
-    const { startGame } = useGame();
+    const { startGame, setGameMode } = useGame();
     const navigate = useNavigate();
 
-    const handleStart = () => {
+    const handleStart = (mode) => {
+        setGameMode(mode);
         startGame();
         navigate('/intro');
     };
 
     return (
         <div className="min-h-screen bg-[#0b0f19] flex flex-col items-center justify-center p-6 text-slate-200 text-center relative overflow-hidden">
-            {/* Background Grid/Effect */}
+            {/* Background Grid/Effect & Market Animation */}
+            <MarketBackground />
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
 
             <div className="max-w-6xl w-full animate-fade-in z-10 relative">

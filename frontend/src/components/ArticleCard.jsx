@@ -1,5 +1,7 @@
 // ArticleCard Component - Displays articles with platform-specific styling
 
+import StockIcon from './StockIcon';
+
 export default function ArticleCard({ article }) {
     if (article.platform === 'twitter') {
         return <TwitterCard article={article} />;
@@ -15,8 +17,8 @@ function TwitterCard({ article }) {
         <div className="twitter-card group">
             {/* Header */}
             <div className="flex items-start gap-3 mb-3">
-                <div className="w-12 h-12 rounded-full bg-twitter/20 flex items-center justify-center text-2xl flex-shrink-0">
-                    {article.avatar}
+                <div className="w-12 h-12 rounded-full bg-twitter/20 flex items-center justify-center flex-shrink-0">
+                    <StockIcon name={article.icon} className="w-6 h-6 text-twitter" />
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">

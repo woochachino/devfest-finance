@@ -8,6 +8,7 @@ import { getPreDecisionAnalysis, getEducationalDebrief } from '../services/k2Thi
 import K2ThinkAnalysis from '../components/K2ThinkAnalysis';
 import K2ThinkDebrief from '../components/K2ThinkDebrief';
 import StockResultCard from '../components/StockResultCard';
+import StockIcon from '../components/StockIcon';
 import LoadingScreen from '../components/LoadingScreen';
 import PortfolioGraph from '../components/PortfolioGraph';
 import MoneyParticles from '../components/MoneyParticles';
@@ -343,7 +344,7 @@ export default function ResultsPage() {
                             {results.bestPerformer && (
                                 <div className="flex items-center justify-between p-4 bg-emerald-900/10 border border-emerald-500/20 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 flex items-center justify-center bg-emerald-500/20 rounded-lg text-lg">{results.bestPerformer.emoji}</div>
+                                        <div className="w-9 h-9 flex items-center justify-center bg-emerald-500/20 rounded-lg text-lg"><StockIcon name={results.bestPerformer.icon} className="w-5 h-5 text-emerald-400" /></div>
                                         <div>
                                             <div className="text-[10px] text-emerald-500 uppercase tracking-wider font-mono">Top Pick</div>
                                             <div className="font-bold text-white text-sm">{results.bestPerformer.ticker}</div>
@@ -355,7 +356,7 @@ export default function ResultsPage() {
                             {results.worstPerformer && results.stockResults.length > 1 && (
                                 <div className="flex items-center justify-between p-4 bg-red-900/10 border border-red-500/20 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 flex items-center justify-center bg-red-500/20 rounded-lg text-lg">{results.worstPerformer.emoji}</div>
+                                        <div className="w-9 h-9 flex items-center justify-center bg-red-500/20 rounded-lg text-lg"><StockIcon name={results.worstPerformer.icon} className="w-5 h-5 text-red-400" /></div>
                                         <div>
                                             <div className="text-[10px] text-red-500 uppercase tracking-wider font-mono">Worst Pick</div>
                                             <div className="font-bold text-white text-sm">{results.worstPerformer.ticker}</div>

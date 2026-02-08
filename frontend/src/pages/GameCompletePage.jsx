@@ -87,7 +87,7 @@ export default function GameCompletePage() {
                         {worstRound && worstRound !== bestRound && (
                             <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl">
                                 <div className="flex items-center gap-3">
-                                    <span className="text-2xl">📉</span>
+                                    <span className="text-2xl">↓</span>
                                     <div>
                                         <div className="font-semibold text-white">Toughest Round</div>
                                         <div className="text-sm text-slate-400">Round {worstRound.round}</div>

@@ -1,5 +1,7 @@
 // StockResultCard Component - Displays individual stock performance
 
+import StockIcon from './StockIcon';
+
 export default function StockResultCard({ result, delay = 0 }) {
     const isPositive = result.returnPercent >= 0;
 
@@ -11,8 +13,8 @@ export default function StockResultCard({ result, delay = 0 }) {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-slate-700/50 flex items-center justify-center text-2xl">
-                        {result.emoji}
+                    <div className="w-12 h-12 rounded-xl bg-slate-700/50 flex items-center justify-center">
+                        <StockIcon name={result.icon} className="w-6 h-6 text-slate-300" />
                     </div>
                     <div>
                         <div className="font-bold text-lg text-white">{result.ticker}</div>
@@ -20,8 +22,8 @@ export default function StockResultCard({ result, delay = 0 }) {
                     </div>
                 </div>
 
-                <div className={`text-3xl font-bold ${isPositive ? 'text-gain-400' : 'text-loss-400'}`}>
-                    {isPositive ? '📈' : '📉'}
+                <div className={isPositive ? 'text-gain-400' : 'text-loss-400'}>
+                    <StockIcon name={isPositive ? 'TrendingUp' : 'TrendingDown'} className="w-8 h-8" />
                 </div>
             </div>
 

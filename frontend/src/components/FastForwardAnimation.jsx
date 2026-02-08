@@ -97,7 +97,7 @@ export default function FastForwardAnimation({ period, onComplete }) {
 
                 {/* Floating Elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    {['📈', '📉', '💰', '📊', '💵', '🏦'].map((emoji, index) => (
+                    {['↑', '↓', '💰', '📈', '💵', '🏦'].map((symbol, index) => (
                         <div
                             key={index}
                             className="absolute text-3xl opacity-20 animate-float"
@@ -108,7 +108,7 @@ export default function FastForwardAnimation({ period, onComplete }) {
                                 animationDuration: `${2 + index * 0.5}s`,
                             }}
                         >
-                            {emoji}
+                            {symbol}
                         </div>
                     ))}
                 </div>

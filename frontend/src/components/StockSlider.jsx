@@ -1,6 +1,7 @@
 // StockSlider Component - Individual stock allocation slider
 
 import { useGame } from '../context/GameContext';
+import StockIcon from './StockIcon';
 
 export default function StockSlider({ stock }) {
     const { allocations, setStockAllocation, balance } = useGame();
@@ -19,7 +20,7 @@ export default function StockSlider({ stock }) {
                 {/* Stock Info */}
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg bg-slate-700/50 flex items-center justify-center text-xl">
-                        {stock.emoji}
+                        <StockIcon name={stock.icon} className="w-5 h-5 text-slate-300" />
                     </div>
                     <div>
                         <div className="font-bold text-white">{stock.ticker}</div>

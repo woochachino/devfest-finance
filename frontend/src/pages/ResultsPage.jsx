@@ -7,7 +7,7 @@ import { getPreDecisionAnalysis, getEducationalDebrief } from '../services/k2Thi
 import K2ThinkAnalysis from '../components/K2ThinkAnalysis';
 import K2ThinkDebrief from '../components/K2ThinkDebrief';
 import StockResultCard from '../components/StockResultCard';
-import FastForwardAnimation from '../components/FastForwardAnimation';
+import LoadingScreen from '../components/LoadingScreen';
 
 export default function ResultsPage() {
     const {
@@ -90,8 +90,7 @@ export default function ResultsPage() {
     // Show animation first
     if (showAnimation) {
         return (
-            <FastForwardAnimation
-                period={roundData.period}
+            <LoadingScreen
                 onComplete={handleAnimationComplete}
             />
         );

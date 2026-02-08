@@ -42,8 +42,6 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
         initialPrices[ticker] = priceLookup[ticker][firstDate];
     });
 
-    const equalWeight = 100 / allTickers.length;
-
     // Track last known prices for forward-fill
     const lastKnown = {};
     allTickers.forEach((t) => {
@@ -52,7 +50,6 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
 
     return dates.map((date) => {
         let playerValue = 0;
-        let benchmarkValue = 0;
 
         allTickers.forEach((ticker) => {
             const price = priceLookup[ticker][date] ?? lastKnown[ticker];
@@ -63,13 +60,11 @@ function computePortfolioTimeSeries(roundId, allocations, initialBalance) {
 
             const alloc = allocations[ticker] || 0;
             playerValue += (alloc / 100) * initialBalance * priceRatio;
-            benchmarkValue += (equalWeight / 100) * initialBalance * priceRatio;
         });
 
         return {
             date,
             player: Math.round(playerValue * 100) / 100,
-            benchmark: Math.round(benchmarkValue * 100) / 100,
         };
     });
 }
@@ -174,18 +169,6 @@ export default function PortfolioGraph({ roundId, allocations, initialBalance = 
                     <Tooltip content={<CustomTooltip />} />
                     <Legend
                         wrapperStyle={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#94a3b8' }}
-                    />
-                    {/* Reference line at initial balance */}
-                    <Line
-                        type="monotone"
-                        dataKey="benchmark"
-                        stroke="#6366f1"
-                        strokeWidth={1.5}
-                        strokeDasharray="6 3"
-                        dot={false}
-                        name="Equal Weight"
-                        animationDuration={3000}
-                        animationEasing="ease-in-out"
                     />
                     <Line
                         type="monotone"

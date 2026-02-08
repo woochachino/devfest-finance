@@ -12,7 +12,7 @@ function AvatarModel() {
 }
 
 export default function LandingPage() {
-    const { startGame, setGameMode } = useGame();
+    const { startGame, setGameMode, highscore } = useGame();
     const navigate = useNavigate();
 
     const handleStart = (mode) => {
@@ -53,23 +53,24 @@ export default function LandingPage() {
                         </h3>
 
                         <div>
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Current Level</div>
-                            <div className="text-xl font-mono-numbers text-white">01 <span className="text-xs text-slate-500 font-sans">/ ROOKIE</span></div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">High Score</div>
+                            <div className={`text-xl font-mono-numbers ${highscore ? 'text-emerald-400' : 'text-slate-600'}`}>
+                                {highscore ? `$${Math.round(highscore).toLocaleString()}` : '---'}
+                            </div>
                         </div>
 
                         <div>
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Portfolio Value</div>
-                            <div className="text-xl font-mono-numbers text-emerald-400">$0.00</div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Starting Capital</div>
+                            <div className="text-xl font-mono-numbers text-white">$10,000</div>
                         </div>
 
                         <div>
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Risk Profile</div>
-                            <div className="text-xl font-mono-numbers text-amber-400">UNRATED</div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Rounds</div>
+                            <div className="text-xl font-mono-numbers text-amber-400">3</div>
                         </div>
 
                         <div>
                             <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Status</div>
-
                                 <span className="text-sm font-medium text-emerald-500">MARKET OPEN</span>
                         </div>
                     </div>

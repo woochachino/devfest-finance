@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { gameData } from '../data/gameData';
 
 const GameContext = createContext(null);
@@ -28,6 +28,12 @@ export function GameProvider({ children }) {
 
     // History of all rounds for final summary
     const [roundHistory, setRoundHistory] = useState([]);
+
+    // Highscore from localStorage
+    const [highscore, setHighscore] = useState(() => {
+        const saved = localStorage.getItem('marketmind_highscore');
+        return saved ? parseFloat(saved) : null;
+    });
 
     // Get current round data
     const getCurrentRoundData = useCallback(() => {
@@ -108,9 +114,9 @@ export function GameProvider({ children }) {
             debrief,
         }]);
 
-        // Reset balance to initial balance for next round
+        // Carry over final balance to next round
         if (results) {
-            setBalance(gameData.initialBalance);
+            setBalance(results.finalBalance);
         }
 
         // Move to next round or complete game
@@ -122,9 +128,15 @@ export function GameProvider({ children }) {
             setDebrief(null);
             setGamePhase('roundIntro');
         } else {
+            // Game complete — save highscore
+            const finalBal = results?.finalBalance ?? balance;
+            if (!highscore || finalBal > highscore) {
+                setHighscore(finalBal);
+                localStorage.setItem('marketmind_highscore', String(finalBal));
+            }
             setGamePhase('complete');
         }
-    }, [currentRound, allocations, results, preAnalysis, debrief]);
+    }, [currentRound, allocations, results, preAnalysis, debrief, balance, highscore]);
 
     // Reset entire game
     const resetGame = useCallback(() => {
@@ -161,6 +173,7 @@ export function GameProvider({ children }) {
         gamePhase,
         gameMode,
         roundHistory,
+        highscore,
 
         // Computed
         getCurrentRoundData,

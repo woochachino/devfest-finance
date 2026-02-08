@@ -2,7 +2,7 @@ import AnimatedStockChart from './AnimatedStockChart';
 
 export default function MarketBackground() {
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
             {/* Animated Stock Chart Canvas */}
             <AnimatedStockChart />
 

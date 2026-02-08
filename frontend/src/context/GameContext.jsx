@@ -142,7 +142,20 @@ export function GameProvider({ children }) {
         }
 
         // Move to next round or complete game
-        if (currentRound < ROUNDS_PER_GAME) {
+        const isUnlimited = gameMode === 'chill';
+        const hasMoreRounds = isUnlimited || currentRound < ROUNDS_PER_GAME;
+
+        if (hasMoreRounds) {
+            const nextIdx = currentRound; // 0-indexed into selectedRounds for the NEXT round
+            // If we've exhausted selectedRounds, add another random round
+            if (nextIdx >= selectedRounds.length) {
+                const usedIds = new Set(selectedRounds.map(r => r.id));
+                const unused = gameData.rounds.filter(r => !usedIds.has(r.id));
+                // If all rounds used, recycle from the full pool
+                const pool = unused.length > 0 ? unused : gameData.rounds;
+                const next = pool[Math.floor(Math.random() * pool.length)];
+                setSelectedRounds(prev => [...prev, next]);
+            }
             setCurrentRound(prev => prev + 1);
             setAllocations({});
             setResults(null);
@@ -157,7 +170,7 @@ export function GameProvider({ children }) {
             }
             setGamePhase('complete');
         }
-    }, [currentRound, selectedRounds, allocations, results, preAnalysis, debrief, balance, highscore, isBankrupt]);
+    }, [currentRound, selectedRounds, gameMode, allocations, results, preAnalysis, debrief, balance, highscore, isBankrupt]);
 
     // Reset entire game
     const resetGame = useCallback(() => {

@@ -264,7 +264,7 @@ export default function LandingPage() {
                                             <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase">Mode</span>
                                         </div>
                                         <div className="text-xs text-slate-400 group-hover:text-cyan-300/70 transition-colors">
-                                            No time pressure • Think clearly
+                                            No time pressure • Unlimited rounds
                                         </div>
                                     </div>
                                     <svg className="w-5 h-5 text-slate-600 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -314,13 +314,13 @@ export default function LandingPage() {
                                     <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500/30 to-violet-600/30 border border-purple-400/30 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
                                         👥
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="font-black text-xl text-white group-hover:text-purple-300 transition-colors">MULTIPLAYER</span>
+                                            <span className="font-black text-lg text-white group-hover:text-purple-300 transition-colors">MULTI</span>
                                             <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 text-[10px] font-bold uppercase">New</span>
                                         </div>
                                         <div className="text-xs text-slate-400 group-hover:text-purple-300/70 transition-colors">
-                                            Compete with friends • 5 rounds
+                                            Compete with friends
                                         </div>
                                     </div>
                                     <svg className="w-5 h-5 text-slate-600 group-hover:text-purple-400 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,7 +339,7 @@ export default function LandingPage() {
             </div>
 
             {/* Leaderboard Section - Below the fold */}
-            <div className="w-full bg-[#0b0f19] relative z-20 border-t border-slate-800/50">
+            <div className="w-full relative z-20 border-t border-slate-800/50 backdrop-blur-sm">
                 <div className="max-w-6xl mx-auto px-6 py-24">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">
@@ -351,7 +351,7 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 text-left">
+                    <div className="grid md:grid-cols-2 gap-8">
                         {/* Global Leaderboard */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between px-2">

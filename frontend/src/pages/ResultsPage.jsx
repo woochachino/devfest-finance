@@ -41,10 +41,13 @@ export default function ResultsPage() {
         getCurrentRoundData,
         advanceToNextRound,
         resetGame,
+        gameMode,
     } = useGame();
 
     const navigate = useNavigate();
     const roundData = getCurrentRoundData();
+
+    const isUnlimited = gameMode === 'chill';
 
     const handleContinue = () => {
         // Check for bankruptcy (balance under $5000)
@@ -55,13 +58,18 @@ export default function ResultsPage() {
             return;
         }
 
-        if (currentRound >= 3) {
+        if (!isUnlimited && currentRound >= 3) {
             advanceToNextRound();
             navigate('/complete');
         } else {
             advanceToNextRound();
             navigate('/portfolio');
         }
+    };
+
+    const handleFinish = () => {
+        advanceToNextRound();
+        navigate('/complete');
     };
 
     const handleHome = () => {
@@ -256,16 +264,24 @@ export default function ResultsPage() {
 
                 {/* Next Round Button - Show immediately after graph */}
                 {showReveal && (
-                    <section className="animate-fade-in pt-4 pb-20 flex justify-center">
+                    <section className="animate-fade-in pt-4 pb-20 flex flex-col items-center gap-3">
                         <button
                             onClick={handleContinue}
                             className="group relative px-10 py-4 bg-white hover:bg-slate-100 text-slate-900 font-bold uppercase tracking-widest text-sm transition-all duration-200 hover:scale-105 rounded-lg shadow-lg shadow-white/10"
                         >
                             <span className="flex items-center gap-3">
-                                {currentRound < 3 ? `NEXT ROUND` : 'VIEW FINAL RESULTS'}
+                                {isUnlimited ? 'NEXT ROUND' : currentRound < 3 ? 'NEXT ROUND' : 'VIEW FINAL RESULTS'}
                                 <span className="text-slate-400 group-hover:translate-x-1 transition-transform">&rarr;</span>
                             </span>
                         </button>
+                        {isUnlimited && (
+                            <button
+                                onClick={handleFinish}
+                                className="text-xs text-slate-500 hover:text-slate-300 uppercase tracking-widest transition-colors py-2"
+                            >
+                                End Game &amp; View Results
+                            </button>
+                        )}
                     </section>
                 )}
 

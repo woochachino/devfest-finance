@@ -5,6 +5,7 @@ import { useGame } from '../context/GameContext';
 import ArticleCard from '../components/ArticleCard';
 import StockSlider from '../components/StockSlider';
 import AllocationSummary from '../components/AllocationSummary';
+import Timer from '../components/Timer';
 
 export default function PortfolioPage() {
     const {
@@ -12,7 +13,10 @@ export default function PortfolioPage() {
         balance,
         getCurrentRoundData,
         getTotalAllocation,
-        lockInPortfolio
+        lockInPortfolio,
+        gameMode,
+        allocations,
+        setStockAllocation
     } = useGame();
 
     const navigate = useNavigate();
@@ -25,8 +29,34 @@ export default function PortfolioPage() {
         navigate('/results');
     };
 
+    // Auto-lock when timer hits 0 in Panic Mode
+    const handleTimeUp = () => {
+        // Force normalization or just accept as is?
+        // Brief says: 
+        // < 100%: Remainder to cash (0% return) - logic handles this naturally as untracked %
+        // > 100%: Normalize to 100%
+
+        if (totalAllocation > 100) {
+            // Simple normalization
+            const factor = 100 / totalAllocation;
+            roundData.stocks.forEach(stock => {
+                const current = allocations[stock.ticker] || 0;
+                setStockAllocation(stock.ticker, Math.floor(current * factor));
+            });
+        }
+
+        // Brief delay to show "Time's Up" feeling?
+        // For now, immediate lock
+        handleLockIn();
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+            {/* Panic Mode Timer */}
+            {gameMode === 'panic' && (
+                <Timer duration={30} onTimeUp={handleTimeUp} />
+            )}
+
             {/* Header */}
             <header className="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-lg border-b border-slate-700/50">
                 <div className="max-w-7xl mx-auto px-6 py-4">
@@ -36,8 +66,9 @@ export default function PortfolioPage() {
                                 Round {currentRound}/3
                             </div>
                             <div>
-                                <h1 className="text-lg font-bold text-white">{roundData.title}</h1>
-                                <p className="text-sm text-slate-400">{roundData.period}</p>
+                                {/* Mystery Year: Hide specific title/year */}
+                                <h1 className="text-lg font-bold text-white">Mystery Scenario #{currentRound}</h1>
+                                <p className="text-sm text-slate-400">Time: Unknown Market Cycle</p>
                             </div>
                         </div>
                         <div className="text-right">
@@ -70,10 +101,10 @@ export default function PortfolioPage() {
                                 Market News & Sentiment
                             </h2>
                             <p className="text-sm text-slate-400 mb-4">
-                                These are real posts from {roundData.year}. What would you have believed?
+                                These are real historical posts. Can you identify the market cycle?
                             </p>
 
-                            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
+                            <div className="space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
                                 {roundData.articles.map((article) => (
                                     <ArticleCard key={article.id} article={article} />
                                 ))}

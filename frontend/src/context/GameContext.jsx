@@ -23,6 +23,9 @@ export function GameProvider({ children }) {
     // Game state
     const [gamePhase, setGamePhase] = useState('landing'); // landing, roundIntro, portfolio, results, complete
 
+    // Game Mode: 'chill' or 'panic'
+    const [gameMode, setGameMode] = useState(null);
+
     // History of all rounds for final summary
     const [roundHistory, setRoundHistory] = useState([]);
 
@@ -133,6 +136,7 @@ export function GameProvider({ children }) {
         setDebrief(null);
         setGamePhase('welcome');
         setRoundHistory([]);
+        setGameMode(null);
     }, []);
 
     // Start round (go to portfolio builder)
@@ -155,6 +159,7 @@ export function GameProvider({ children }) {
         preAnalysis,
         debrief,
         gamePhase,
+        gameMode,
         roundHistory,
 
         // Computed
@@ -171,7 +176,9 @@ export function GameProvider({ children }) {
         lockInPortfolio,
         setPreAnalysis,
         setDebrief,
+        setDebrief,
         setGamePhase,
+        setGameMode,
 
         // Navigation
         startGame: () => setGamePhase('roundIntro'),

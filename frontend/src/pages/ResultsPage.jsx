@@ -133,6 +133,22 @@ export default function ResultsPage() {
             {/* Main Content */}
             <div className="max-w-6xl mx-auto px-6 py-8 space-y-8">
 
+                {/* The Reveal Section */}
+                <div className="text-center animate-slide-up">
+                    <div className="inline-block px-4 py-1 bg-emerald-500/10 rounded-full text-emerald-400 text-sm font-bold mb-4 uppercase tracking-wider">
+                        ✨ The Reveal
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
+                        You were trading in <span className="gradient-text">{roundData.year}</span>
+                    </h1>
+                    <h2 className="text-2xl md:text-3xl text-slate-300 font-medium mb-4">
+                        {roundData.title}
+                    </h2>
+                    <p className="text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
+                        {roundData.context}
+                    </p>
+                </div>
+
                 {/* Section 1: K2 Think Pre-Decision Analysis */}
                 <section className="animate-fade-in">
                     <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">

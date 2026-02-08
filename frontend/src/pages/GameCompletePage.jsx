@@ -1,12 +1,16 @@
 // GameCompletePage - Final summary after all 3 rounds
 
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { gameData } from '../data/gameData';
+import Leaderboard, { saveScore } from '../components/Leaderboard';
+import GlobalLeaderboard from '../components/GlobalLeaderboard';
 
 export default function GameCompletePage() {
     const navigate = useNavigate();
-    const { balance, roundHistory, resetGame } = useGame();
+    const { balance, roundHistory, resetGame, gameMode } = useGame();
+    const [scoreSaved, setScoreSaved] = useState(false);
 
     const initialBalance = gameData.initialBalance;
     const totalReturn = ((balance - initialBalance) / initialBalance * 100);
@@ -16,6 +20,14 @@ export default function GameCompletePage() {
         resetGame();
         navigate('/');
     };
+
+    // Save score to leaderboard on first render
+    useEffect(() => {
+        if (!scoreSaved && balance > 0) {
+            saveScore(balance, gameMode);
+            setScoreSaved(true);
+        }
+    }, [balance, gameMode, scoreSaved]);
 
     // Calculate stats
     const bestRound = roundHistory.reduce((best, round) => {
@@ -59,7 +71,7 @@ export default function GameCompletePage() {
                 </div>
             </header>
 
-            <div className="max-w-2xl mx-auto px-6 py-12">
+            <div className="max-w-5xl mx-auto px-6 py-12">
                 {/* Trophy Animation */}
                 <div className="text-center mb-8 animate-fade-in">
                     <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4 animate-float">
@@ -171,6 +183,12 @@ export default function GameCompletePage() {
                         <span>🔄</span>
                         <span>Play Again</span>
                     </button>
+                </div>
+
+                {/* Leaderboards - Side by Side */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6 animate-slide-up" style={{ animationDelay: '200ms' }}>
+                    <GlobalLeaderboard />
+                    <Leaderboard currentScore={balance} currentMode={gameMode} />
                 </div>
 
                 {/* Footer */}

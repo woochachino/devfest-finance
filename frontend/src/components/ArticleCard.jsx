@@ -22,8 +22,7 @@ function TwitterCard({ article }) {
                     <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-bold text-white">{article.author}</span>
                         <span className="text-slate-500">@{article.handle}</span>
-                        <span className="text-slate-500">·</span>
-                        <span className="text-slate-500 text-sm">{article.date}</span>
+                        {/* Date hidden */}
                     </div>
                 </div>
                 <div className="text-twitter">
@@ -86,8 +85,7 @@ function RedditCard({ article }) {
                         <span className="text-reddit font-medium">{article.subreddit}</span>
                         <span>•</span>
                         <span>Posted by {article.author}</span>
-                        <span>•</span>
-                        <span>{article.date}</span>
+                        {/* Date hidden for Mystery Mode */}
                     </div>
 
                     {/* Title */}
@@ -122,13 +120,10 @@ function RedditCard({ article }) {
 function NewsCard({ article }) {
     return (
         <div className="news-card group hover:border-primary-500/30">
-            {/* Source & Date */}
-            <div className="flex items-center justify-between mb-3">
-                <span className="text-primary-400 font-semibold text-sm uppercase tracking-wide">
-                    {article.source}
-                </span>
-                <span className="text-slate-500 text-sm">{article.date}</span>
-            </div>
+            <span className="text-primary-400 font-semibold text-sm uppercase tracking-wide">
+                {article.source}
+            </span>
+            {/* Date hidden for Mystery Mode */}
 
             {/* Title */}
             <h3 className="text-white font-bold text-xl mb-3 leading-tight group-hover:text-primary-400 transition-colors">

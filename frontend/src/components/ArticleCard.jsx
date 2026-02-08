@@ -2,6 +2,13 @@
 
 import StockIcon from './StockIcon';
 
+// Utility to redact years from text content
+const redactYear = (text) => {
+    if (!text) return text;
+    // Replace 4-digit years (2020-2029) with XXXX
+    return text.replace(/\b20[0-2][0-9]\b/g, 'XXXX');
+};
+
 export default function ArticleCard({ article }) {
     if (article.platform === 'twitter') {
         return <TwitterCard article={article} />;
@@ -35,7 +42,7 @@ function TwitterCard({ article }) {
             </div>
 
             {/* Content */}
-            <p className="text-white/90 leading-relaxed mb-4">{article.content}</p>
+            <p className="text-white/90 leading-relaxed mb-4">{redactYear(article.content)}</p>
 
             {/* Engagement */}
             <div className="flex items-center gap-6 text-slate-500 text-sm">
@@ -92,11 +99,11 @@ function RedditCard({ article }) {
 
                     {/* Title */}
                     <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-reddit transition-colors">
-                        {article.title}
+                        {redactYear(article.title)}
                     </h3>
 
                     {/* Content */}
-                    <p className="text-white/80 leading-relaxed">{article.content}</p>
+                    <p className="text-white/80 leading-relaxed">{redactYear(article.content)}</p>
 
                     {/* Actions */}
                     <div className="flex items-center gap-4 mt-4 text-slate-500 text-sm">
@@ -129,11 +136,11 @@ function NewsCard({ article }) {
 
             {/* Title */}
             <h3 className="text-white font-bold text-xl mb-3 leading-tight group-hover:text-primary-400 transition-colors">
-                {article.title}
+                {redactYear(article.title)}
             </h3>
 
             {/* Content */}
-            <p className="text-white/80 leading-relaxed">{article.content}</p>
+            <p className="text-white/80 leading-relaxed">{redactYear(article.content)}</p>
 
             {/* Read more indicator */}
             <div className="mt-4 flex items-center gap-2 text-primary-400 text-sm font-medium group-hover:translate-x-1 transition-transform">

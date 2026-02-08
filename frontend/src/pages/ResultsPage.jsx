@@ -54,6 +54,14 @@ export default function ResultsPage() {
     const roundData = getCurrentRoundData();
 
     const handleContinue = () => {
+        // Check for bankruptcy (balance under $5000)
+        const finalBalance = results?.finalBalance ?? balance;
+        if (finalBalance < 5000) {
+            advanceToNextRound(); // This will set isGameOver = true
+            navigate('/complete');
+            return;
+        }
+
         if (currentRound >= 3) {
             advanceToNextRound();
             navigate('/complete');
@@ -221,8 +229,8 @@ export default function ResultsPage() {
                         </div>
                         {cashAnimDone && results && (
                             <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full ${isPositive
-                                    ? 'bg-emerald-500/20 text-emerald-400'
-                                    : 'bg-red-500/20 text-red-400'
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : 'bg-red-500/20 text-red-400'
                                 }`}>
                                 {isPositive ? '+' : ''}{results.overallReturn.toFixed(1)}%
                             </span>
@@ -240,8 +248,8 @@ export default function ResultsPage() {
                         {/* Return badge */}
                         <div ref={returnRef}>
                             <div className={`inline-block mb-3 px-4 py-1.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-widest border ${isPositive
-                                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                                    : 'bg-red-500/10 border-red-500/30 text-red-400'
+                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                : 'bg-red-500/10 border-red-500/30 text-red-400'
                                 }`}>
                                 {isPositive ? 'Profitable Trade' : 'Loss Recorded'}
                             </div>
@@ -254,7 +262,7 @@ export default function ResultsPage() {
 
                             {/* P&L line */}
                             <div className="flex items-center justify-center gap-3 text-xl font-mono">
-                                <span className="text-slate-500">$10,000</span>
+                                <span className="text-slate-500">${Math.round(results.initialBalance).toLocaleString('en-US')}</span>
                                 <span className="text-slate-600">&rarr;</span>
                                 <span className={`font-bold ${isPositive ? 'text-emerald-400' : 'text-red-400'}`}>
                                     ${Math.round(results.finalBalance).toLocaleString('en-US')}

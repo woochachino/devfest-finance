@@ -103,6 +103,14 @@ export function GameProvider({ children }) {
         return resultsData;
     }, [allocations, balance, getCurrentRoundData]);
 
+    // Check if player is bankrupt (balance under $5000)
+    const isBankrupt = useCallback((balanceToCheck) => {
+        return balanceToCheck < 5000;
+    }, []);
+
+    // Game over state
+    const [isGameOver, setIsGameOver] = useState(false);
+
     // Advance to next round
     const advanceToNextRound = useCallback(() => {
         // Save current round to history
@@ -115,8 +123,16 @@ export function GameProvider({ children }) {
         }]);
 
         // Carry over final balance to next round
+        const newBalance = results?.finalBalance ?? balance;
         if (results) {
-            setBalance(results.finalBalance);
+            setBalance(newBalance);
+        }
+
+        // Check for bankruptcy
+        if (isBankrupt(newBalance)) {
+            setIsGameOver(true);
+            setGamePhase('complete');
+            return;
         }
 
         // Move to next round or complete game
@@ -129,14 +145,13 @@ export function GameProvider({ children }) {
             setGamePhase('roundIntro');
         } else {
             // Game complete — save highscore
-            const finalBal = results?.finalBalance ?? balance;
-            if (!highscore || finalBal > highscore) {
-                setHighscore(finalBal);
-                localStorage.setItem('marketmind_highscore', String(finalBal));
+            if (!highscore || newBalance > highscore) {
+                setHighscore(newBalance);
+                localStorage.setItem('marketmind_highscore', String(newBalance));
             }
             setGamePhase('complete');
         }
-    }, [currentRound, allocations, results, preAnalysis, debrief, balance, highscore]);
+    }, [currentRound, allocations, results, preAnalysis, debrief, balance, highscore, isBankrupt]);
 
     // Reset entire game
     const resetGame = useCallback(() => {
@@ -149,6 +164,7 @@ export function GameProvider({ children }) {
         setGamePhase('landing');
         setRoundHistory([]);
         setGameMode(null);
+        setIsGameOver(false);
     }, []);
 
     // Start round (go to portfolio builder)
@@ -174,6 +190,7 @@ export function GameProvider({ children }) {
         gameMode,
         roundHistory,
         highscore,
+        isGameOver,
 
         // Computed
         getCurrentRoundData,

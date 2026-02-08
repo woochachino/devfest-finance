@@ -158,7 +158,65 @@ export async function getEducationalDebrief(portfolio, results, roundData) {
     return getMockDebrief(portfolio, results, roundData);
 }
 
+// Stock information database for hover tooltips
+const stockInfoDatabase = {
+    // Round 1 - AI Boom
+    NVDA: { sector: 'Semiconductors', description: 'Designs GPUs and AI accelerator chips. Dominates the AI training hardware market with 80%+ share.' },
+    AMD: { sector: 'Semiconductors', description: 'Makes CPUs and GPUs. The #2 AI chip maker, competing directly with NVIDIA in data centers.' },
+    MSFT: { sector: 'Technology', description: 'Software giant behind Windows, Office, Azure cloud, and a major investor in OpenAI.' },
+    GOOGL: { sector: 'Technology', description: 'Parent of Google Search, YouTube, and Google Cloud. Invented the Transformer architecture behind ChatGPT.' },
+    INTC: { sector: 'Semiconductors', description: 'Legacy chip maker focused on CPUs and manufacturing. Struggling to compete in AI accelerators.' },
+    SNAP: { sector: 'Social Media', description: 'Snapchat parent company. Ad-dependent business facing competition from TikTok.' },
+    IBM: { sector: 'Technology', description: 'Enterprise IT services and consulting. Has been "pivoting to AI" for over a decade with mixed results.' },
+    DIS: { sector: 'Entertainment', description: 'Media conglomerate owning Disney+, theme parks, Marvel, and Star Wars. Facing streaming losses.' },
+    MRNA: { sector: 'Biotechnology', description: 'mRNA vaccine pioneer. Revenue heavily dependent on COVID vaccines, now declining.' },
+
+    // Round 2 - Banking Crisis
+    JPM: { sector: 'Banking', description: 'Largest US bank by assets. Known as the "fortress balance sheet" that gains deposits during crises.' },
+    WFC: { sector: 'Banking', description: 'Major US bank. Similar to JPMorgan, benefits from deposit flight during banking panics.' },
+    SCHW: { sector: 'Financial Services', description: 'Brokerage and wealth management. Holds significant bond portfolios sensitive to rate changes.' },
+    KRE: { sector: 'Banking ETF', description: 'Regional bank ETF. Exposed to smaller banks with concentrated deposits and bond losses.' },
+    GLD: { sector: 'Commodities', description: 'Gold ETF. Traditional safe haven when trust in financial system erodes.' },
+    AAPL: { sector: 'Technology', description: 'iPhone maker with $160B cash. Often acts as a "safe haven" tech stock during volatility.' },
+    PFE: { sector: 'Pharmaceuticals', description: 'Major pharma company. Defensive healthcare stock, less correlated with banking sector.' },
+    VNO: { sector: 'Real Estate', description: 'Office REIT focused on NYC. Vulnerable to work-from-home trends and CRE credit crunch.' },
+    COIN: { sector: 'Cryptocurrency', description: 'Largest US crypto exchange. Dependent on crypto-friendly banks for operations.' },
+
+    // Round 3 - Inflation
+    XOM: { sector: 'Energy', description: 'Oil & gas supermajor. Benefits directly from high oil prices and energy supply shocks.' },
+    META: { sector: 'Technology', description: 'Facebook/Instagram parent. Spending billions on Metaverse while core ad business faces headwinds.' },
+    COST: { sector: 'Consumer Retail', description: 'Warehouse club retailer. Membership model with lower margins than traditional retail.' },
+    DVN: { sector: 'Energy', description: 'Oil & gas producer focused on US shale. Highly leveraged to oil price movements.' },
+    AMZN: { sector: 'Technology', description: 'E-commerce and cloud giant. Post-COVID hangover with excess warehouse capacity.' },
+    LMT: { sector: 'Defense', description: 'Largest defense contractor. Benefits from increased military spending and geopolitical tension.' },
+    WMT: { sector: 'Consumer Retail', description: 'Biggest US retailer. Vulnerable to margin compression when inflation raises costs faster than prices.' },
+    TGT: { sector: 'Consumer Retail', description: 'Discount retailer. More exposed to discretionary spending shifts than pure grocers.' },
+    TSLA: { sector: 'Automotive', description: 'Electric vehicle leader. Growth stock trading at high multiples, sensitive to interest rates.' },
+
+    // Common
+    SPY: { sector: 'Index Fund', description: 'S&P 500 ETF tracking the 500 largest US companies. The benchmark for US equity markets.' },
+};
+
+// Get stock information for hover tooltip
+export async function getStockInfo(ticker) {
+    // In future, this could call K2 Think API for dynamic descriptions
+    // For now, use the predefined database
+
+    const info = stockInfoDatabase[ticker];
+    if (info) {
+        return info;
+    }
+
+    // Fallback for unknown tickers
+    return {
+        sector: 'Unknown',
+        description: 'Stock information not available.',
+    };
+}
+
 export default {
     getPreDecisionAnalysis,
     getEducationalDebrief,
+    getStockInfo,
 };
+

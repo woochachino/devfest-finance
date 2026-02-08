@@ -1,4 +1,4 @@
-// GameCompletePage - Final summary after all 3 rounds
+// GameCompletePage - Final summary after all 3 rounds (or game over if bankrupt)
 
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
@@ -6,7 +6,7 @@ import { gameData } from '../data/gameData';
 
 export default function GameCompletePage() {
     const navigate = useNavigate();
-    const { balance, roundHistory, resetGame } = useGame();
+    const { balance, roundHistory, resetGame, isGameOver } = useGame();
 
     const initialBalance = gameData.initialBalance;
     const totalReturn = ((balance - initialBalance) / initialBalance * 100);
@@ -26,13 +26,26 @@ export default function GameCompletePage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
             <div className="max-w-2xl w-full">
-                {/* Trophy Animation */}
+                {/* Header - Different for Game Over vs Complete */}
                 <div className="text-center mb-8 animate-fade-in">
-                    <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4 animate-float">
-                        <span className="text-5xl">🏆</span>
-                    </div>
-                    <h1 className="text-4xl font-bold text-white mb-2">Game Complete!</h1>
-                    <p className="text-xl text-slate-400">You survived 3 market cycles</p>
+                    {isGameOver ? (
+                        <>
+                            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-red-700 mb-4 animate-pulse">
+                                <span className="text-5xl">💸</span>
+                            </div>
+                            <h1 className="text-4xl font-bold text-red-400 mb-2">GAME OVER</h1>
+                            <p className="text-xl text-slate-400">Your portfolio dropped below $5,000</p>
+                            <p className="text-sm text-red-400/70 mt-2">You've been margin called!</p>
+                        </>
+                    ) : (
+                        <>
+                            <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 mb-4 animate-float">
+                                <span className="text-5xl">🏆</span>
+                            </div>
+                            <h1 className="text-4xl font-bold text-white mb-2">Game Complete!</h1>
+                            <p className="text-xl text-slate-400">You survived 3 market cycles</p>
+                        </>
+                    )}
                 </div>
 
                 {/* Final Results Card */}

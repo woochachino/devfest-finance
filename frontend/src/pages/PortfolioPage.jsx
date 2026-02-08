@@ -23,6 +23,7 @@ export default function PortfolioPage() {
     const roundData = getCurrentRoundData();
     const totalAllocation = getTotalAllocation();
     const isComplete = totalAllocation === 100;
+    const isOverAllocated = totalAllocation > 100;
 
     const handleLockIn = () => {
         lockInPortfolio();
@@ -52,10 +53,10 @@ export default function PortfolioPage() {
 
     return (
         <div className="min-h-screen bg-[#0b0f19] text-slate-200 font-sans selection:bg-amber-500/30">
-            {/* Panic Mode Timer */}
+            {/* Timed Mode Timer */}
             {gameMode === 'panic' && (
                 <div className="fixed top-0 left-0 w-full h-1 z-50">
-                    <Timer duration={30} onTimeUp={handleTimeUp} />
+                    <Timer duration={parseInt(localStorage.getItem('timerDuration') || '30', 10)} onTimeUp={handleTimeUp} />
                 </div>
             )}
 
@@ -115,32 +116,24 @@ export default function PortfolioPage() {
                 </div>
 
                 {/* Right Panel: Order Entry (60%) */}
-                <div className="lg:col-span-7 flex flex-col h-full bg-slate-900/30 border border-slate-800 rounded-sm">
-                    <div className="p-3 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center">
+                <div className="lg:col-span-7 flex flex-col h-full bg-slate-900/30 border border-slate-800 rounded-sm relative">
+                    <div className="p-3 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center relative z-[200]">
                         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                             <span className="text-lg">ORDER</span> ENTRY
                         </h2>
-                        <span className="text-[10px] font-mono text-slate-600">ALLOCATION REQUIRED: 100%</span>
+                        <span className="text-[10px] font-mono text-slate-600">ALLOCATION: UP TO 100%</span>
                     </div>
 
-                    <div className="flex-1 p-6 overflow-y-auto">
-                        {/* Allocation Visualization */}
-                        <div className="mb-8 p-4 bg-slate-900 border border-slate-800 rounded-sm">
-                            <div className="flex justify-between items-center mb-4">
-                                <span className="text-xs text-slate-500 uppercase tracking-widest">Portfolio Exposure</span>
-                                <span className={`font-mono-numbers text-sm font-bold ${isComplete ? 'text-emerald-400' : 'text-amber-400'}`}>
-                                    {totalAllocation}% / 100%
-                                </span>
-                            </div>
+                    <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+                        {/* Allocation Summary */}
+                        <div className="mb-6">
                             <AllocationSummary />
                         </div>
 
-                        {/* Order Tickets (Sliders) */}
-                        <div className="grid md:grid-cols-2 gap-4 mb-8">
+                        {/* Stock Selection Grid */}
+                        <div className="grid md:grid-cols-2 gap-4">
                             {roundData.stocks.map((stock) => (
-                                <div key={stock.ticker} className="bg-slate-900 border border-slate-800 p-4 hover:border-slate-600 transition-colors">
-                                    <StockSlider stock={stock} />
-                                </div>
+                                <StockSlider key={stock.ticker} stock={stock} />
                             ))}
                         </div>
                     </div>
@@ -155,7 +148,7 @@ export default function PortfolioPage() {
                                     </span>
                                     :
                                     <span className="text-amber-500 flex items-center gap-2 animate-pulse">
-                                        ⚠ IMBALANCED PORTFOLIO. ADJUST EXPECTATIONS.
+                                        ⚠ ALLOCATE EXACTLY 100% TO PROCEED.
                                     </span>
                                 }
                             </div>
@@ -164,13 +157,26 @@ export default function PortfolioPage() {
                                 onClick={handleLockIn}
                                 disabled={!isComplete}
                                 className={`
-                                    px-8 py-4 font-bold tracking-widest uppercase text-sm transition-all duration-200
+                                    relative overflow-hidden px-10 py-4 font-bold tracking-widest uppercase text-sm 
+                                    rounded-xl transition-all duration-300
                                     ${isComplete
-                                        ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/20 hover:scale-[1.02]'
-                                        : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'}
+                                        ? 'bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:scale-[1.03] border border-emerald-400/30'
+                                        : 'bg-slate-800/50 text-slate-500 cursor-not-allowed border border-slate-700 rounded-xl'}
                                 `}
                             >
-                                {isComplete ? 'EXECUTE ORDER' : 'AWAITING INPUT'}
+                                {isComplete && (
+                                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-pulse" />
+                                )}
+                                <span className="relative flex items-center gap-2">
+                                    {isComplete ? (
+                                        <>
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                            EXECUTE ORDER
+                                        </>
+                                    ) : 'AWAITING INPUT'}
+                                </span>
                             </button>
                         </div>
                     </div>

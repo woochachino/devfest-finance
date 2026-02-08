@@ -194,10 +194,6 @@ export default function GameCompletePage() {
                 {/* Footer */}
                 <div className="text-center text-slate-500 text-sm">
                     <p className="mb-2">Built for Columbia DevFest 2026</p>
-                    <p className="flex items-center justify-center gap-2">
-                        <span>Powered by</span>
-                        <span className="px-2 py-1 k2-gradient rounded text-white font-bold text-xs">K2 Think</span>
-                    </p>
                 </div>
             </div>
         </div>

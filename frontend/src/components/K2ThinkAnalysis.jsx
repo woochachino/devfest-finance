@@ -36,7 +36,7 @@ export default function K2ThinkAnalysis({ analysis, isLoading }) {
                     </div>
                     <div>
                         <h3 className="font-bold text-white text-lg">Pre-Decision Analysis</h3>
-                        <p className="text-sm text-k2-400">Powered by K2 Think AI</p>
+                        <p className="text-sm text-k2-400"></p>
                     </div>
                 </div>
 
@@ -134,7 +134,7 @@ function K2LoadingState() {
                 </div>
                 <div>
                     <h3 className="font-bold text-white text-lg">Analyzing Your Portfolio...</h3>
-                    <p className="text-sm text-k2-400">Powered by K2 Think AI</p>
+                    <p className="text-sm text-k2-400"> AI</p>
                 </div>
             </div>
 

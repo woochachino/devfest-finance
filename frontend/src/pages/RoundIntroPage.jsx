@@ -32,140 +32,136 @@ export default function RoundIntroPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6 relative">
+        <div className="min-h-screen bg-[#0b0f19] flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Background Grid/Effect */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
+
+            {/* Decorative Background Elements */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 opacity-50"></div>
+            <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 opacity-50"></div>
 
             {/* Navigation Buttons */}
-            <div className="absolute top-6 left-6 z-10">
+            <div className="absolute top-6 left-6 z-20">
                 <button
                     onClick={handleBack}
-                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors font-mono text-xs uppercase tracking-widest"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to Home
+                    <span className="text-lg">←</span> BACK
                 </button>
             </div>
 
-            <div className="absolute top-6 right-6 z-10">
+            <div className="absolute top-6 right-6 z-20">
                 <button
                     onClick={handleHome}
-                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                    className="flex items-center gap-2 text-slate-500 hover:text-white transition-colors font-mono text-xs uppercase tracking-widest"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Home
+                    ABORT SESSION <span className="text-lg">×</span>
                 </button>
             </div>
 
-            <div className="max-w-4xl w-full">
-                {/* Round Badge */}
-                <div className="text-center mb-8 animate-fade-in">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 border border-primary-500/30 rounded-full text-primary-400 font-medium mb-4">
-                        <span className="text-lg">🎮</span>
-                        Round {currentRound} of 3
+            <div className="max-w-5xl w-full z-10 grid md:grid-cols-12 gap-8">
+
+                {/* Left Column: Status & Stats */}
+                <div className="md:col-span-4 space-y-4 animate-slide-right">
+                    {/* Round Badge */}
+                    <div className="bg-slate-900 border border-slate-700 p-6 relative overflow-hidden group hover:border-slate-500 transition-colors">
+                        <div className="absolute top-0 right-0 p-2 opacity-10 text-9xl font-bold leading-none select-none transition-transform group-hover:scale-110 duration-500">
+                            {currentRound}
+                        </div>
+                        <div className="text-xs font-mono text-slate-500 mb-2 uppercase tracking-widest">Target Scenario</div>
+                        <div className="text-4xl font-bold text-white mb-1">0{currentRound} <span className="text-lg text-slate-600 font-light">/ 03</span></div>
+                        <div className="inline-block mt-2 px-2 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-mono uppercase tracking-widest border border-emerald-500/20">
+                            Status: Active
+                        </div>
                     </div>
 
                     {/* Balance Display */}
-                    <div className="glass-card p-6 mb-6 max-w-lg mx-auto">
-                        <div className="text-sm text-slate-400 mb-1">Your Portfolio Value</div>
-                        <div className="text-4xl font-bold text-white tabular-nums">
+                    <div className="bg-slate-900 border border-slate-700 p-6 group hover:border-amber-500/30 transition-colors">
+                        <div className="text-xs font-mono text-slate-500 mb-2 uppercase tracking-widest">Available Capital</div>
+                        <div className="text-3xl font-mono-numbers text-white tracking-tight">
                             ${balance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </div>
                         {previousRoundReturn && (
-                            <div className={`text-sm mt-2 ${parseFloat(previousRoundReturn) >= 0 ? 'text-gain-400' : 'text-loss-400'}`}>
-                                {parseFloat(previousRoundReturn) >= 0 ? '↑' : '↓'} {previousRoundReturn}% overall return
+                            <div className={`text-xs font-mono mt-3 pb-1 border-b ${parseFloat(previousRoundReturn) >= 0 ? 'text-emerald-400 border-emerald-500/30' : 'text-red-400 border-red-500/30'} inline-block`}>
+                                {parseFloat(previousRoundReturn) >= 0 ? '▲' : '▼'} {previousRoundReturn}% Yield (Prev.)
                             </div>
                         )}
                     </div>
                 </div>
 
-                {/* Main Card */}
-                <div className="glass-card p-8 animate-slide-up" style={{ animationDelay: '150ms' }}>
-                    {/* Mystery Year Title */}
-                    <div className="text-center mb-6">
-                        <div className="text-6xl font-bold gradient-text mb-2">????</div>
-                        <h1 className="text-2xl font-bold text-white">Mystery Market Scenario #{currentRound}</h1>
-                        <div className="text-slate-400 mt-2">Time Period: Unknown</div>
-                    </div>
+                {/* Right Column: Briefing & Actions */}
+                <div className="md:col-span-8">
+                    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700 p-8 md:p-10 relative animate-slide-up">
+                        {/* Decorative Corner */}
+                        <div className="absolute top-0 right-0 w-16 h-16 overflow-hidden">
+                            <div className="absolute top-0 right-0 w-full h-full bg-slate-800 rotate-45 transform translate-x-1/2 -translate-y-1/2"></div>
+                        </div>
 
-                    {/* Context (Generic) */}
-                    <div className="mb-8 text-center max-w-2xl mx-auto">
-                        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-center gap-2">
-                            <span>🌍</span> Market Conditions
-                        </h3>
-                        <p className="text-slate-300 leading-relaxed">
-                            Analyze the news and sentiment to figure out where we are in history. The market is shifting—can you spot the trend before the reveal?
-                        </p>
-                    </div>
-
-                    {/* Mode Selection for Round 1 Only */}
-                    {currentRound === 1 && !gameMode ? (
-                        <div className="grid md:grid-cols-2 gap-6 mt-8">
-                            {/* Chill Mode Card */}
-                            <div className="group relative bg-slate-800/50 hover:bg-blue-900/20 border border-slate-700 hover:border-blue-500/50 rounded-2xl p-6 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-                                onClick={() => handleStart('chill')}>
-                                <div>
-                                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">🧘</div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Chill Mode</h3>
-                                    <p className="text-slate-400 text-sm mb-4">
-                                        Take your time. Read carefully. Make thoughtful decisions without any pressure.
-                                    </p>
-                                    <ul className="text-sm text-slate-500 space-y-2 mb-6">
-                                        <li className="flex items-center gap-2">✅ No Time Limit</li>
-                                        <li className="flex items-center gap-2">✅ Unlimited Reading</li>
-                                        <li className="flex items-center gap-2">✅ Learn at Your Pace</li>
-                                    </ul>
-                                </div>
-                                <button className="w-full btn-secondary text-blue-300 border-blue-500/30 hover:bg-blue-500/10">
-                                    Play Chill Mode
-                                </button>
+                        {/* Mystery Year Title */}
+                        <div className="mb-8 border-b border-slate-800 pb-8">
+                            <div className="flex items-center gap-3 mb-4">
+                                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <span className="text-xs font-mono text-amber-500 uppercase tracking-widest">Market Intelligence Brief</span>
                             </div>
 
-                            {/* Panic Mode Card */}
-                            <div className="group relative bg-slate-800/50 hover:bg-red-900/20 border border-slate-700 hover:border-red-500/50 rounded-2xl p-6 transition-all duration-300 cursor-pointer flex flex-col justify-between"
-                                onClick={() => handleStart('panic')}>
-                                <div>
-                                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">⚡</div>
-                                    <h3 className="text-xl font-bold text-white mb-2">Panic Mode</h3>
-                                    <p className="text-slate-400 text-sm mb-4">
-                                        30 seconds per round. Read fast. Decide faster. Experience real market pressure.
-                                    </p>
-                                    <ul className="text-sm text-slate-500 space-y-2 mb-6">
-                                        <li className="flex items-center gap-2">⚠️ 30 Second Timer</li>
-                                        <li className="flex items-center gap-2">⚠️ Auto-Lock at 0:00</li>
-                                        <li className="flex items-center gap-2">⚠️ High Pressure Tests</li>
-                                    </ul>
-                                </div>
-                                <button className="w-full btn-secondary text-red-300 border-red-500/30 hover:bg-red-500/10">
-                                    Play Panic Mode
-                                </button>
+                            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 tracking-tight">
+                                Mystery Scenario #{currentRound}
+                            </h1>
+                            <div className="font-mono text-slate-500 text-sm">{new Date().toLocaleDateString().toUpperCase()} // [REDACTED TIMEFRAME]</div>
+                        </div>
+
+                        {/* Context */}
+                        <div className="mb-10 space-y-6">
+                            <div>
+                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <span className="w-4 h-[1px] bg-slate-600"></span>
+                                    SITUATION REPORT
+                                </h3>
+                                <p className="text-slate-300 leading-relaxed text-lg font-light border-l-2 border-slate-700 pl-4">
+                                    "Analyze the news and sentiment to figure out where we are in history. The market is shifting—can you spot the trend before the reveal?"
+                                </p>
                             </div>
                         </div>
-                    ) : (
-                        /* Standard Start Button for Subsequent Rounds or if mode selected */
-                        <div className="mt-8 flex justify-center">
+
+                        {/* Mode Selection or Start */}
+                        {currentRound === 1 && !gameMode ? (
+                            <div className="grid md:grid-cols-2 gap-4 mt-8">
+                                {/* Chill Mode */}
+                                <button onClick={() => handleStart('chill')} className="group text-left p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-blue-400 transition-all duration-200">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="text-xs font-mono text-blue-400 uppercase">Option A</span>
+                                        <span className="text-slate-500 group-hover:text-blue-400">→</span>
+                                    </div>
+                                    <div className="font-bold text-white mb-1">Chill Mode</div>
+                                    <div className="text-xs text-slate-400">Take your time. Analyze deeply.</div>
+                                </button>
+
+                                {/* Panic Mode */}
+                                <button onClick={() => handleStart('panic')} className="group text-left p-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-red-400 transition-all duration-200">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <span className="text-xs font-mono text-red-400 uppercase">Option B</span>
+                                        <span className="text-slate-500 group-hover:text-red-400">→</span>
+                                    </div>
+                                    <div className="font-bold text-white mb-1">Panic Mode</div>
+                                    <div className="text-xs text-slate-400">30s limit. High pressure.</div>
+                                </button>
+                            </div>
+                        ) : (
                             <button
                                 onClick={() => handleStart(gameMode)}
-                                className={`btn-primary text-lg py-4 px-12 flex items-center justify-center gap-2 ${gameMode === 'panic' ? 'hover:shadow-red-500/20' : ''}`}
+                                className="w-full group btn-primary flex items-center justify-between text-lg py-5 px-8 bg-white text-slate-900 hover:bg-slate-200 border-none"
                             >
-                                <span>Start Round {currentRound}</span>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
+                                <span className="font-bold tracking-tight">INITIATE TRADING SEQUENCE</span>
+                                <span className="font-mono text-sm opacity-50 group-hover:translate-x-1 transition-transform">ENTER MARKET →</span>
                             </button>
-                        </div>
-                    )}
-                </div>
+                        )}
 
-                {/* Footer */}
-                <div className="text-center mt-6 text-slate-500 text-sm animate-fade-in" style={{ animationDelay: '300ms' }}>
-                    {gameMode === 'panic' ? (
-                        <span className="text-red-400/60 font-medium">⚠️ Panic Mode Active: Good Luck!</span>
-                    ) : (
-                        <span>Powered by real historical data • Learn by doing</span>
-                    )}
+                        {/* Footer Info */}
+                        <div className="mt-6 pt-6 border-t border-slate-800 flex justify-between items-center text-xs font-mono text-slate-600">
+                            <span>SECURE CONNECTION</span>
+                            <span>{gameMode === 'panic' ? '⚠️ HIGH VOLATILITY EXPECTED' : 'STANDARD PROTOCOL'}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

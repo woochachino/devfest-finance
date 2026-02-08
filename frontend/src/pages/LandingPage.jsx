@@ -19,62 +19,74 @@ export default function LandingPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-6 text-white text-center">
-            <div className="max-w-5xl w-full animate-fade-in">
-                {/* Hero Section */}
-                <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-gradient-x">
-                    MarketMind
-                </h1>
+        <div className="min-h-screen bg-[#0b0f19] flex flex-col items-center justify-center p-6 text-slate-200 text-center relative overflow-hidden">
+            {/* Background Grid/Effect */}
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none"></div>
 
-                <p className="text-lg md:text-xl text-slate-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Master the psychology of investing.
-                    <br />
-                    Navigate real historical market scenarios and defeat your biases.
-                </p>
+            <div className="max-w-6xl w-full animate-fade-in z-10 relative">
+                {/* Header / Logo Area */}
+                <div className="mb-12">
+                    <div className="inline-block px-3 py-1 border border-amber-500/30 rounded-full bg-amber-500/10 text-amber-400 text-xs font-mono mb-4 tracking-widest uppercase">
+                        Financial Literacy Initiative v1.0
+                    </div>
+                    <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+                        <span className="text-white">MARKET</span>
+                        <span className="gradient-text-gold">MIND</span>
+                    </h1>
+                    <p className="text-lg md:text-xl text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed font-light">
+                        Navigate historical market cycles. Master your psychology. <br />
+                        <span className="text-slate-500">Analyze. execute. adapt.</span>
+                    </p>
+                </div>
 
-                {/* Stats + Avatar Row */}
-                <div className="w-full max-w-4xl mx-auto mb-8 -mt-2 flex items-center gap-0 justify-center">
-                    {/* Stats Panel - Left */}
-                    <div className="flex-shrink-0 w-40 text-left flex flex-col justify-between h-[450px] py-4 mr-[-1rem]">
-                        <div className="px-3 py-2">
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Level</div>
-                            <div className="text-base font-bold text-white">1 <span className="text-[11px] font-normal text-slate-400">/ Rookie</span></div>
+                {/* Main Content Area: Stats & Avatar */}
+                <div className="grid md:grid-cols-12 gap-8 items-center mb-16 border-y border-slate-800 py-12 bg-slate-900/30 backdrop-blur-sm">
+                    {/* Stats / Trader Profile (Left) */}
+                    <div className="md:col-span-3 text-left space-y-6 px-6">
+                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-800 pb-2">
+                            TRADER PROFILE
+                        </h3>
+
+                        <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Current Level</div>
+                            <div className="text-xl font-mono-numbers text-white">01 <span className="text-xs text-slate-500 font-sans">/ ROOKIE</span></div>
                         </div>
-                        <div className="px-3 py-2">
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500">High Score</div>
-                            <div className="text-base font-bold text-emerald-400">$0</div>
+
+                        <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Portfolio Value</div>
+                            <div className="text-xl font-mono-numbers text-emerald-400">$0.00</div>
                         </div>
-                        <div className="px-3 py-2">
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Investor Type</div>
-                            <div className="text-base font-bold text-purple-400">Undiscovered</div>
+
+                        <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Risk Profile</div>
+                            <div className="text-xl font-mono-numbers text-amber-400">UNRATED</div>
                         </div>
-                        <div className="px-3 py-2">
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Fav. Gamemode</div>
-                            <div className="text-base font-bold text-blue-400">--</div>
-                        </div>
-                        <div className="px-3 py-2">
-                            <div className="text-[10px] uppercase tracking-wider text-slate-500">Rounds Played</div>
-                            <div className="text-base font-bold text-white">0</div>
+
+                        <div>
+                            <div className="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Status</div>
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="text-sm font-medium text-emerald-500">MARKET OPEN</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* 3D Avatar - Right */}
-                    <div className="w-[400px] flex-shrink-0 h-[450px]">
+                    {/* Avatar (Center) */}
+                    <div className="md:col-span-6 h-[400px] relative">
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-transparent z-10 opacity-50"></div>
                         <Suspense fallback={
                             <div className="h-full flex items-center justify-center">
                                 <div className="text-center">
-                                    <div className="text-9xl mb-6 animate-bounce">👨‍💼</div>
-                                    <div className="text-slate-400 text-lg">Loading your avatar...</div>
+                                    <div className="text-4xl mb-4 animate-pulse text-slate-700">◈</div>
+                                    <div className="text-slate-500 text-xs uppercase tracking-widest">Initializing Asset...</div>
                                 </div>
                             </div>
                         }>
-                            <Canvas camera={{ position: [0, 0.5, 4.5], fov: 50 }} style={{ background: 'transparent' }}>
-                                <ambientLight intensity={1.8} />
-                                <directionalLight position={[5, 8, 5]} intensity={2.5} color="#ffffff" />
-                                <directionalLight position={[-5, 5, -3]} intensity={1.2} color="#94a3b8" />
-                                <spotLight position={[0, 10, 8]} angle={0.3} penumbra={1} intensity={2} color="#ffffff" />
-                                <pointLight position={[-3, 2, 4]} intensity={1} color="#60a5fa" />
-                                <pointLight position={[3, -1, 3]} intensity={0.8} color="#a78bfa" />
+                            <Canvas camera={{ position: [0, 0.5, 4.5], fov: 45 }} style={{ background: 'transparent' }}>
+                                <ambientLight intensity={2.5} />
+                                <directionalLight position={[5, 8, 5]} intensity={3} color="#ffffff" />
+                                <directionalLight position={[-5, 5, -3]} intensity={2} color="#94a3b8" />
+                                <spotLight position={[0, 10, 8]} angle={0.3} penumbra={1} intensity={2} color="#fbbf24" />
                                 <hemisphereLight args={['#bfdbfe', '#1e293b', 1]} />
                                 <AvatarModel />
                                 <OrbitControls
@@ -83,31 +95,49 @@ export default function LandingPage() {
                                     minPolarAngle={Math.PI / 3}
                                     maxPolarAngle={Math.PI / 1.8}
                                     autoRotate={true}
-                                    autoRotateSpeed={1}
+                                    autoRotateSpeed={0.8}
                                 />
                             </Canvas>
                         </Suspense>
+                    </div>
 
+                    {/* Mode Selection (Right) */}
+                    <div className="md:col-span-3 px-6 text-left">
+                        <h3 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-800 pb-2">
+                            SELECT STRATEGY
+                        </h3>
+
+                        <div className="space-y-4">
+                            <button
+                                onClick={() => handleStart('chill')}
+                                className="w-full group text-left p-4 bg-slate-800/40 hover:bg-slate-800 border-l-2 border-slate-600 hover:border-blue-400 transition-all duration-200"
+                            >
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="font-bold text-white group-hover:text-blue-300">CHILL MODE</span>
+                                    <span className="text-slate-600 group-hover:text-blue-300">→</span>
+                                </div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wider">No Time Limit</div>
+                            </button>
+
+                            <button
+                                onClick={() => handleStart('panic')}
+                                className="w-full group text-left p-4 bg-slate-800/40 hover:bg-slate-800 border-l-2 border-slate-600 hover:border-red-500 transition-all duration-200"
+                            >
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="font-bold text-white group-hover:text-red-300">PANIC MODE</span>
+                                    <span className="text-slate-600 group-hover:text-red-300">→</span>
+                                </div>
+                                <div className="text-xs text-slate-500 uppercase tracking-wider">30s Execution Timer</div>
+                            </button>
+                        </div>
                     </div>
                 </div>
-
-                {/* CTA Button */}
-                <button
-                    onClick={handleStart}
-                    className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-500 hover:to-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg hover:shadow-xl hover:scale-105"
-                >
-                    <span className="w-full h-full rounded-full opacity-0 group-hover:animate-ping absolute inset-0 bg-white"></span>
-                    <span className="relative flex items-center gap-3">
-                        Start Your Journey
-                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                    </span>
-                </button>
             </div>
 
-            <footer className="absolute bottom-6 text-slate-500 text-sm">
-                © {new Date().getFullYear()} MarketMind • Financial Literacy Initiative
+            <footer className="absolute bottom-6 w-full text-center border-t border-slate-800/50 pt-4">
+                <div className="text-slate-600 text-xs font-mono uppercase tracking-widest">
+                    MARKETMIND TERMINAL v2.0 • SYSTEM ACTIVE • {new Date().getFullYear()}
+                </div>
             </footer>
         </div>
     );

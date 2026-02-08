@@ -6,6 +6,21 @@ import { gameData } from '../data/gameData';
 
 const MultiplayerContext = createContext(null);
 
+// API base URL - uses env var in production, falls back to same-origin proxy in dev
+const API_BASE = import.meta.env.VITE_API_URL || '';
+
+// Get WebSocket URL from API base or current host
+const getWsUrl = (code, pid) => {
+    if (import.meta.env.VITE_API_URL) {
+        // Production: convert https://xxx to wss://xxx
+        const base = import.meta.env.VITE_API_URL.replace(/^http/, 'ws');
+        return `${base}/api/multiplayer/ws/${code}/${pid}`;
+    }
+    // Dev: use current hostname with port 8000
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${window.location.hostname}:8000/api/multiplayer/ws/${code}/${pid}`;
+};
+
 export function MultiplayerProvider({ children }) {
     const [roomCode, setRoomCode] = useState(null);
     const [playerId, setPlayerId] = useState(null);
@@ -33,8 +48,7 @@ export function MultiplayerProvider({ children }) {
             wsRef.current.close();
         }
 
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.hostname}:8000/api/multiplayer/ws/${code}/${pid}`;
+        const wsUrl = getWsUrl(code, pid);
         const ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
@@ -114,7 +128,7 @@ export function MultiplayerProvider({ children }) {
     // API calls
     const createRoom = async (name) => {
         setError(null);
-        const response = await fetch('/api/multiplayer/create-room', {
+        const response = await fetch(`${API_BASE}/api/multiplayer/create-room`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ display_name: name }),
@@ -136,7 +150,7 @@ export function MultiplayerProvider({ children }) {
 
     const joinRoom = async (code, name) => {
         setError(null);
-        const response = await fetch('/api/multiplayer/join-room', {
+        const response = await fetch(`${API_BASE}/api/multiplayer/join-room`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ room_code: code.toUpperCase(), display_name: name }),
@@ -161,7 +175,7 @@ export function MultiplayerProvider({ children }) {
     };
 
     const startGame = async () => {
-        const response = await fetch(`/api/multiplayer/${roomCode}/start`, {
+        const response = await fetch(`${API_BASE}/api/multiplayer/${roomCode}/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ player_id: playerId }),
@@ -174,7 +188,7 @@ export function MultiplayerProvider({ children }) {
 
     const submitAllocations = async () => {
         if (submitted) return;
-        const response = await fetch(`/api/multiplayer/${roomCode}/submit`, {
+        const response = await fetch(`${API_BASE}/api/multiplayer/${roomCode}/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ player_id: playerId, allocations }),

@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     k2_api_key: str = ""
     k2_api_url: str = "https://api.mbzuai.ae/v1/chat/completions"
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "*"
 
     @property
     def cors_origin_list(self) -> list[str]:

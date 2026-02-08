@@ -11,3 +11,5 @@ anthropic==0.18.1
 yfinance==0.2.35
 newsapi-python==0.2.7
 pandas==2.2.0
+aiosqlite==0.20.0
+websockets==12.0

@@ -4,15 +4,15 @@
 export const gameData = {
     rounds: [
         // ══════════════════════════════════════════════════════════
-        // Round 1: The AI Boom Divergence (Jan 2023 - Jun 2023)
+        // Round 1: The AI Boom Divergence (May - Jun 2023)
         // ══════════════════════════════════════════════════════════
         {
             id: 1,
             year: 2023,
             title: "The AI Boom Divergence",
-            period: "January - June 2023",
-            period_start: "2023-01-03",
-            period_end: "2023-06-30",
+            period: "May - June 2023",
+            period_start: "2023-05-10",
+            period_end: "2023-06-09",
             description: "ChatGPT has just launched. The market is repricing AI winners and losers. Not all tech benefits equally from AI — can you spot who really wins?",
             context: "ChatGPT hit 100 million users in 2 months, the fastest-growing consumer app ever. Microsoft invested $10B in OpenAI. Every CEO is scrambling to add 'AI' to their earnings calls. But which companies actually benefit — and which are just riding the hype?",
             articles: [
@@ -95,12 +95,12 @@ export const gameData = {
                 },
             ],
             stocks: [
-                { ticker: 'NVDA', name: 'NVIDIA Corporation', emoji: '💚', return: 195.6 },
-                { ticker: 'MSFT', name: 'Microsoft', emoji: '🪟', return: 42.8 },
-                { ticker: 'GOOGL', name: 'Alphabet', emoji: '🔍', return: 34.3 },
-                { ticker: 'INTC', name: 'Intel Corporation', emoji: '🔵', return: 27.1 },
-                { ticker: 'SNAP', name: 'Snap Inc.', emoji: '👻', return: 33.8 },
-                { ticker: 'IBM', name: 'IBM', emoji: '🏢', return: -3.0 },
+                { ticker: 'NVDA', name: 'NVIDIA Corporation', emoji: '💚', return: 34.2 },
+                { ticker: 'MSFT', name: 'Microsoft', emoji: '🪟', return: 4.9 },
+                { ticker: 'GOOGL', name: 'Alphabet', emoji: '🔍', return: 9.4 },
+                { ticker: 'INTC', name: 'Intel Corporation', emoji: '🔵', return: 4.6 },
+                { ticker: 'SNAP', name: 'Snap Inc.', emoji: '👻', return: 16.0 },
+                { ticker: 'IBM', name: 'IBM', emoji: '🏢', return: 10.9 },
             ],
             teachingPoints: {
                 biases: ['FOMO', 'AI Washing Blindness', 'Herd Mentality', 'Narrative Bias'],
@@ -109,22 +109,22 @@ export const gameData = {
                     'Goldman Sachs framework distinguished real AI beneficiaries from pretenders',
                     'Intel had no competitive AI GPU offering — missing the biggest tech trend',
                     'Snap rallied on AI chatbot hype despite weak ad revenue — a momentum trap',
-                    'IBM\'s WatsonX was the latest in a long history of failed AI pivots — the only stock to decline',
+                    'IBM surprised with WatsonX hype — even "AI washing" worked short-term',
                 ],
-                keyLessons: 'The AI boom rewarded infrastructure providers (NVIDIA +196%) and companies with genuine AI integration (Microsoft +43%) while punishing those who merely talked about AI (IBM -3%). Even struggling companies like Snap rode the AI hype wave (+34%), but the real alpha was in distinguishing genuine AI revenue growth from "AI washing."',
+                keyLessons: 'In the month after NVIDIA\'s blowout Q1 earnings, the AI boom rewarded infrastructure providers (NVIDIA +34%) most. But in the short term, even the "AI washing" names rallied — Snap (+16%) and IBM (+11%) both gained on hype. The real alpha was still NVIDIA, but short-term momentum lifted all AI-adjacent boats.',
             },
         },
 
         // ══════════════════════════════════════════════════════════
-        // Round 2: Banking Crisis + Flight to Safety (Jan 2023 - Jun 2023)
+        // Round 2: Banking Crisis + Flight to Safety (Mar - Apr 2023)
         // ══════════════════════════════════════════════════════════
         {
             id: 2,
             year: 2023,
             title: "Banking Crisis & Flight to Safety",
-            period: "January - June 2023",
-            period_start: "2023-01-03",
-            period_end: "2023-06-30",
+            period: "March - April 2023",
+            period_start: "2023-03-20",
+            period_end: "2023-04-20",
             description: "Rate hikes have exposed cracks in the banking system. SVB just collapsed. Is this 2008 all over again, or a contained crisis? Where do you hide — and where do you hunt for opportunity?",
             context: "The Fed's aggressive rate hikes have created $600 billion in unrealized bond losses across the banking system. Silicon Valley Bank just collapsed in the second-largest bank failure in US history. Depositors are panicking. Is this contagion or containment?",
             articles: [
@@ -208,12 +208,12 @@ export const gameData = {
                 },
             ],
             stocks: [
-                { ticker: 'JPM', name: 'JPMorgan Chase', emoji: '🏦', return: 9.3 },
-                { ticker: 'SCHW', name: 'Charles Schwab', emoji: '💼', return: -30.2 },
-                { ticker: 'KRE', name: 'Regional Banks ETF', emoji: '🏛️', return: -28.7 },
-                { ticker: 'GLD', name: 'SPDR Gold Trust', emoji: '🥇', return: 4.2 },
-                { ticker: 'AAPL', name: 'Apple Inc.', emoji: '🍎', return: 55.5 },
-                { ticker: 'PFE', name: 'Pfizer Inc.', emoji: '💊', return: -27.0 },
+                { ticker: 'JPM', name: 'JPMorgan Chase', emoji: '🏦', return: 11.6 },
+                { ticker: 'SCHW', name: 'Charles Schwab', emoji: '💼', return: -3.8 },
+                { ticker: 'KRE', name: 'Regional Banks ETF', emoji: '🏛️', return: -0.2 },
+                { ticker: 'GLD', name: 'SPDR Gold Trust', emoji: '🥇', return: 1.2 },
+                { ticker: 'AAPL', name: 'Apple Inc.', emoji: '🍎', return: 5.9 },
+                { ticker: 'PFE', name: 'Pfizer Inc.', emoji: '💊', return: -2.3 },
             ],
             teachingPoints: {
                 biases: ['Anchoring to "2008"', 'Contagion Fear', 'Flight to Safety Herd', 'False Reassurance'],
@@ -221,23 +221,23 @@ export const gameData = {
                     '$600B unrealized bond losses were THE smoking gun — visible months before SVB collapsed',
                     'SVB\'s deposit concentration among tech/VC made it uniquely vulnerable',
                     'JPMorgan\'s fortress balance sheet meant it would GAIN from the crisis',
-                    'Government reassurance ("this is not 2008") was a red herring',
-                    'Gold as classic safe haven during banking instability',
+                    'Government reassurance ("this is not 2008") was actually correct — contagion was contained',
+                    'Regional banks stabilized quickly once FDIC stepped in',
                 ],
-                keyLessons: 'The banking crisis was hiding in plain sight — $600 billion in unrealized bond losses were reported months before SVB collapsed. The key was understanding which banks were vulnerable (concentrated deposits + bond losses) versus which would benefit (too-big-to-fail megabanks). Flight to quality (Apple, gold) was the winning trade.',
+                keyLessons: 'In the month after SVB\'s collapse, the market quickly separated winners from losers. JPMorgan surged +12% as deposits fled to "too big to fail" banks. But the feared contagion never materialized — regional banks (KRE -0.2%) stabilized, and Schwab (-3.8%) recovered most of its panic losses. The real winner was staying calm and buying quality.',
             },
         },
 
         // ══════════════════════════════════════════════════════════
-        // Round 3: Inflation Regime Change (Jan 2022 - Dec 2022)
+        // Round 3: Inflation Regime Change (May - Jun 2022)
         // ══════════════════════════════════════════════════════════
         {
             id: 3,
             year: 2022,
             title: "Inflation Regime Change",
-            period: "January - December 2022",
-            period_start: "2022-01-03",
-            period_end: "2022-12-30",
+            period: "May - June 2022",
+            period_start: "2022-05-02",
+            period_end: "2022-06-02",
             description: "Zero rates are over. Inflation is at 40-year highs. Russia invades Ukraine. The era of free money is ending — who wins, who loses, and can you see it coming?",
             context: "The Fed signals the most aggressive rate hiking cycle in decades. Inflation hits 7.5%, the highest since 1982. Then Russia invades Ukraine, sending oil past $120/barrel and triggering a global energy crisis. Growth stocks are getting crushed while energy and defense soar.",
             articles: [
@@ -317,12 +317,12 @@ export const gameData = {
                 },
             ],
             stocks: [
-                { ticker: 'XOM', name: 'Exxon Mobil', emoji: '🛢️', return: 80.5 },
-                { ticker: 'META', name: 'Meta Platforms', emoji: '👓', return: -64.5 },
-                { ticker: 'COST', name: 'Costco', emoji: '🛒', return: -18.9 },
-                { ticker: 'DVN', name: 'Devon Energy', emoji: '⛽', return: 45.8 },
-                { ticker: 'AMZN', name: 'Amazon', emoji: '📦', return: -50.7 },
-                { ticker: 'LMT', name: 'Lockheed Martin', emoji: '🛡️', return: 40.9 },
+                { ticker: 'XOM', name: 'Exxon Mobil', emoji: '🛢️', return: 14.2 },
+                { ticker: 'META', name: 'Meta Platforms', emoji: '👓', return: -5.8 },
+                { ticker: 'COST', name: 'Costco', emoji: '🛒', return: -7.8 },
+                { ticker: 'DVN', name: 'Devon Energy', emoji: '⛽', return: 30.8 },
+                { ticker: 'AMZN', name: 'Amazon', emoji: '📦', return: 0.8 },
+                { ticker: 'LMT', name: 'Lockheed Martin', emoji: '🛡️', return: 3.0 },
             ],
             teachingPoints: {
                 biases: ['Buy the Dip Fallacy', 'Recency Bias', 'Narrative Anchoring', 'Ignoring Macro'],
@@ -334,7 +334,7 @@ export const gameData = {
                     'NATO defense spending surge = multi-year tailwind for defense',
                     '"Buy the dip" was a classic trap — 2022 was not 2020',
                 ],
-                keyLessons: 'The 2022 inflation regime change was the most macro-driven year in a decade. Rate hikes crushed growth (META -64.5%, AMZN -50.7%) while Ukraine sent energy (XOM +80.5%, DVN +45.8%) and defense (LMT +40.9%) soaring. The "buy the dip" crowd got destroyed because they failed to see the macro environment had fundamentally changed.',
+                keyLessons: 'In the month after Amazon\'s dismal Q1 report, energy dominated. Devon Energy surged +31% and Exxon +14% as oil stayed above $100/barrel from the Ukraine war. Growth stocks continued bleeding (META -6%, Costco -8%) while Amazon barely held flat. The macro regime change was real — energy and commodities were the only place to hide.',
             },
         },
     ],

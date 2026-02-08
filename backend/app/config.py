@@ -3,7 +3,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    database_url: str = "postgresql+asyncpg://localhost:5432/finsight"
+    database_url: str = "sqlite+aiosqlite:///./finsight.db"
     news_api_key: str = ""
     anthropic_api_key: str = ""
     k2_api_key: str = ""

@@ -13,10 +13,7 @@ export default function WelcomePage() {
         navigate('/portfolio');
     };
 
-    // Calculate performance from previous rounds
-    const previousRoundReturn = roundHistory.length > 0
-        ? ((balance - 10000) / 10000 * 100).toFixed(1)
-        : null;
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-6">
@@ -34,11 +31,7 @@ export default function WelcomePage() {
                         <div className="text-4xl font-bold text-white tabular-nums">
                             ${balance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </div>
-                        {previousRoundReturn && (
-                            <div className={`text-sm mt-2 ${parseFloat(previousRoundReturn) >= 0 ? 'text-gain-400' : 'text-loss-400'}`}>
-                                {parseFloat(previousRoundReturn) >= 0 ? '↑' : '↓'} {previousRoundReturn}% overall return
-                            </div>
-                        )}
+
                     </div>
                 </div>
 

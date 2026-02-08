@@ -105,9 +105,9 @@ export function GameProvider({ children }) {
             debrief,
         }]);
 
-        // Update balance to final balance from this round
+        // Reset balance to initial balance for next round
         if (results) {
-            setBalance(results.finalBalance);
+            setBalance(gameData.initialBalance);
         }
 
         // Move to next round or complete game

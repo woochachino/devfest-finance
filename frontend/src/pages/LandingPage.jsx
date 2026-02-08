@@ -339,7 +339,7 @@ export default function LandingPage() {
             </div>
 
             {/* Leaderboard Section - Below the fold */}
-            <div className="w-full bg-[#0b0f19] relative z-20 border-t border-slate-800/50">
+            <div className="w-full relative z-20 border-t border-slate-800/50 backdrop-blur-sm">
                 <div className="max-w-6xl mx-auto px-6 py-24">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">

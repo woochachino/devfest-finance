@@ -21,7 +21,7 @@ export function GameProvider({ children }) {
     const [debrief, setDebrief] = useState(null);
 
     // Game state
-    const [gamePhase, setGamePhase] = useState('welcome'); // welcome, portfolio, results, complete
+    const [gamePhase, setGamePhase] = useState('landing'); // landing, roundIntro, portfolio, results, complete
 
     // History of all rounds for final summary
     const [roundHistory, setRoundHistory] = useState([]);
@@ -172,6 +172,30 @@ export function GameProvider({ children }) {
         setPreAnalysis,
         setDebrief,
         setGamePhase,
+
+        // Navigation
+        startGame: () => setGamePhase('roundIntro'),
+        goHome: () => {
+            resetGame();
+            setGamePhase('landing');
+        },
+        goBack: () => {
+            switch (gamePhase) {
+                case 'roundIntro':
+                    setGamePhase('landing');
+                    break;
+                case 'portfolio':
+                    setGamePhase('roundIntro');
+                    break;
+                case 'results':
+                    setGamePhase('portfolio');
+                    // Optional: reset results if going back? 
+                    // For now, keep results so they don't lose data, but they can re-submit.
+                    break;
+                default:
+                    break;
+            }
+        },
     };
 
     return (

@@ -47,6 +47,15 @@ export default function PortfolioPage() {
                             </div>
                         </div>
                     </div>
+                    {/* Navigation Buttons for Portfolio */}
+                    <div className="absolute top-4 left-4 flex gap-2">
+                        <button
+                            onClick={() => navigate('/intro')}
+                            className="text-slate-400 hover:text-white transition-colors"
+                        >
+                            ← Back
+                        </button>
+                    </div>
                 </div>
             </header>
 

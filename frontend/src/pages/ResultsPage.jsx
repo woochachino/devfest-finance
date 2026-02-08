@@ -27,7 +27,12 @@ export default function ResultsPage() {
 
     const handleContinue = () => {
         advanceToNextRound();
-        navigate('/game-start');
+        navigate('/intro');
+    };
+
+    const handleHome = () => {
+        resetGame();
+        navigate('/');
     };
 
     // UI State
@@ -93,6 +98,26 @@ export default function ResultsPage() {
                 <div className="max-w-6xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
+                            {/* Navigation Buttons */}
+                            <div className="flex gap-2 mr-4">
+                                <button
+                                    onClick={() => navigate('/portfolio')}
+                                    className="text-slate-400 hover:text-white transition-colors"
+                                    title="Back to Portfolio"
+                                >
+                                    ← Back
+                                </button>
+                                <button
+                                    onClick={handleHome}
+                                    className="text-slate-400 hover:text-white transition-colors"
+                                    title="Go Home"
+                                >
+                                    🏠 Home
+                                </button>
+                            </div>
+                            <div className="px-3 py-1 bg-primary-500/10 border border-primary-500/30 rounded-full text-primary-400 text-sm font-medium">
+                                Round {currentRound}/3 Results
+                            </div>
                             <div className="px-3 py-1 bg-primary-500/10 border border-primary-500/30 rounded-full text-primary-400 text-sm font-medium">
                                 Round {currentRound}/3 Results
                             </div>

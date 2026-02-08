@@ -56,26 +56,38 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences, no explanati
             return getMockAnalysis(roundHistory, gameRounds);
         }
 
-        // Parse JSON from the response — strip think tokens and markdown fences
-        let cleaned = content.trim();
-        // K2-Think-v2 outputs reasoning text then </think> then the answer.
-        // The thinking may or may not start with <think>.
-        // Strip everything up to and including </think>
-        const thinkEnd = cleaned.lastIndexOf('</think>');
+        // Parse JSON from the response — extract reasoning + answer
+        let raw = content.trim();
+
+        // K2-Think-v2 outputs: <think>reasoning</think> then the JSON answer.
+        // Extract the reasoning so we can show it to the user.
+        let reasoning = '';
+        const thinkEnd = raw.lastIndexOf('</think>');
         if (thinkEnd !== -1) {
-            cleaned = cleaned.substring(thinkEnd + '</think>'.length).trim();
+            const thinkStart = raw.indexOf('<think>');
+            reasoning = raw.substring(
+                thinkStart !== -1 ? thinkStart + '<think>'.length : 0,
+                thinkEnd
+            ).trim();
+            raw = raw.substring(thinkEnd + '</think>'.length).trim();
         }
-        if (cleaned.startsWith('```')) {
-            cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
+
+        // Strip markdown fences
+        if (raw.startsWith('```')) {
+            raw = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
         }
 
         // Try to extract JSON object from the cleaned text
-        const jsonStart = cleaned.indexOf('{');
+        const jsonStart = raw.indexOf('{');
         if (jsonStart > 0) {
-            cleaned = cleaned.substring(jsonStart);
+            raw = raw.substring(jsonStart);
         }
 
-        const parsed = JSON.parse(cleaned);
+        const parsed = JSON.parse(raw);
+        // Attach K2's reasoning so the UI can display it
+        if (reasoning) {
+            parsed._k2_reasoning = reasoning;
+        }
         return parsed;
     } catch (err) {
         console.error('K2 Think API call failed:', err);

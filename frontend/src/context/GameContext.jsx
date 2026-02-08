@@ -3,9 +3,14 @@ import { gameData } from '../data/gameData';
 
 const GameContext = createContext(null);
 
+const ROUNDS_PER_GAME = 3;
+
 export function GameProvider({ children }) {
-    // Current round (1, 2, or 3)
+    // Current round index within this session (1, 2, or 3)
     const [currentRound, setCurrentRound] = useState(1);
+
+    // Randomly selected round objects for this session
+    const [selectedRounds, setSelectedRounds] = useState([]);
 
     // Balance starts at $10,000
     const [balance, setBalance] = useState(gameData.initialBalance);
@@ -35,10 +40,10 @@ export function GameProvider({ children }) {
         return saved ? parseFloat(saved) : null;
     });
 
-    // Get current round data
+    // Get current round data from the randomly selected rounds
     const getCurrentRoundData = useCallback(() => {
-        return gameData.rounds.find(r => r.id === currentRound);
-    }, [currentRound]);
+        return selectedRounds[currentRound - 1] || null;
+    }, [currentRound, selectedRounds]);
 
     // Set allocation for a specific stock
     const setStockAllocation = useCallback((ticker, percentage) => {
@@ -113,9 +118,10 @@ export function GameProvider({ children }) {
 
     // Advance to next round
     const advanceToNextRound = useCallback(() => {
-        // Save current round to history
+        // Save current round to history — use the actual round ID, not session index
+        const roundData = selectedRounds[currentRound - 1];
         setRoundHistory(prev => [...prev, {
-            round: currentRound,
+            round: roundData?.id ?? currentRound,
             allocations: { ...allocations },
             results: { ...results },
             preAnalysis,
@@ -136,7 +142,7 @@ export function GameProvider({ children }) {
         }
 
         // Move to next round or complete game
-        if (currentRound < 3) {
+        if (currentRound < ROUNDS_PER_GAME) {
             setCurrentRound(prev => prev + 1);
             setAllocations({});
             setResults(null);
@@ -151,11 +157,12 @@ export function GameProvider({ children }) {
             }
             setGamePhase('complete');
         }
-    }, [currentRound, allocations, results, preAnalysis, debrief, balance, highscore, isBankrupt]);
+    }, [currentRound, selectedRounds, allocations, results, preAnalysis, debrief, balance, highscore, isBankrupt]);
 
     // Reset entire game
     const resetGame = useCallback(() => {
         setCurrentRound(1);
+        setSelectedRounds([]);
         setBalance(gameData.initialBalance);
         setAllocations({});
         setResults(null);
@@ -181,6 +188,7 @@ export function GameProvider({ children }) {
     const value = {
         // State
         currentRound,
+        selectedRounds,
         balance,
         allocations,
         results,
@@ -210,7 +218,12 @@ export function GameProvider({ children }) {
         setGameMode,
 
         // Navigation
-        startGame: () => setGamePhase('roundIntro'),
+        startGame: () => {
+            // Randomly pick ROUNDS_PER_GAME rounds from the pool
+            const shuffled = [...gameData.rounds].sort(() => Math.random() - 0.5);
+            setSelectedRounds(shuffled.slice(0, ROUNDS_PER_GAME));
+            setGamePhase('roundIntro');
+        },
         goHome: () => {
             resetGame();
             setGamePhase('landing');

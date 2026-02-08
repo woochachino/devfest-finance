@@ -164,3 +164,20 @@ body {
 .animate-border-flash {
   animation: border-flash 0.8s ease-in-out infinite;
 }
+
+/* Constellation Map animations */
+@keyframes constellation-line-draw {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes constellation-node-pop {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes constellation-glow {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
+}

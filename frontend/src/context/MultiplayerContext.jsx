@@ -6,15 +6,16 @@ import { gameData } from '../data/gameData';
 
 const MultiplayerContext = createContext(null);
 
-// API base URL - uses env var in production, falls back to same-origin proxy in dev
-const API_BASE = import.meta.env.VITE_API_URL || '';
+// API base URL - scrub trailing slash
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 // Get WebSocket URL from API base or current host
 const getWsUrl = (code, pid) => {
-    if (import.meta.env.VITE_API_URL) {
+    if (API_BASE) {
         // Production: convert https://xxx to wss://xxx
-        const base = import.meta.env.VITE_API_URL.replace(/^http/, 'ws');
-        return `${base}/api/multiplayer/ws/${code}/${pid}`;
+        const wsProtocol = API_BASE.startsWith('https') ? 'wss:' : 'ws:';
+        const host = API_BASE.replace(/^https?:\/\//, '');
+        return `${wsProtocol}//${host}/api/multiplayer/ws/${code}/${pid}`;
     }
     // Dev: use current hostname with port 8000
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';

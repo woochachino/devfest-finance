@@ -351,7 +351,7 @@ export default function LandingPage() {
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8">
+                    <div className="grid md:grid-cols-2 gap-8 text-left">
                         {/* Global Leaderboard */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between px-2">

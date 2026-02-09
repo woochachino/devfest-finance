@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     news_api_key: str = ""
     anthropic_api_key: str = ""
     k2_api_key: str = ""
+    gemini_api_key: str = ""
     k2_api_url: str = "https://api.mbzuai.ae/v1/chat/completions"
     cors_origins: str = "*"
 

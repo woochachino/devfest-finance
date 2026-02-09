@@ -344,3 +344,80 @@ async def get_graph_data(session_id: str, db: AsyncSession = Depends(get_db)):
         "period_start": round_config.period_start.isoformat(),
         "period_end": round_config.period_end.isoformat(),
     }
+
+
+# ── GET /api/stocks/{ticker}/info ───────────────────────────────────────────
+
+@router.get("/stocks/{ticker}/info")
+async def get_stock_info(ticker: str):
+    """Get stock metadata (sector, description) using Gemini."""
+    from app.gemini_stock_service import get_stock_info as gemini_get_stock_info
+    
+    try:
+        info = await gemini_get_stock_info(ticker.upper())
+        return info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get stock info: {str(e)}")
+
+
+# ── POST /api/rounds/generate ───────────────────────────────────────────────
+
+@router.post("/rounds/generate")
+async def generate_dynamic_round(
+    period_months: int = 1,
+    num_stocks: int = 6,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Generate a new round with dynamically selected stocks.
+    
+    Args:
+        period_months: Number of months for the round period (default 1)
+        num_stocks: Number of stocks to include (default 6)
+    
+    Returns:
+        Round configuration with dynamically selected stocks
+    """
+    from datetime import timedelta
+    from app.gemini_stock_service import generate_stocks_for_round
+    
+    # Calculate period (ending today or recent past)
+    end_date = datetime.now().date() - timedelta(days=1)  # Yesterday
+    start_date = end_date - timedelta(days=period_months * 30)
+    
+    round_id = f"dynamic_{uuid.uuid4().hex[:8]}"
+    
+    try:
+        stocks = await generate_stocks_for_round(
+            round_id=round_id,
+            period_start=start_date,
+            period_end=end_date,
+            num_stocks=num_stocks,
+            target_gain_ratio=0.5,
+        )
+        
+        if not stocks:
+            raise HTTPException(
+                status_code=500, 
+                detail="Failed to generate stocks - no valid data available"
+            )
+        
+        # Calculate stats
+        gains = sum(1 for s in stocks if s["return_pct"] > 0)
+        losses = len(stocks) - gains
+        
+        return {
+            "round_id": round_id,
+            "period_start": start_date.isoformat(),
+            "period_end": end_date.isoformat(),
+            "period_months": period_months,
+            "stocks": stocks,
+            "stats": {
+                "total": len(stocks),
+                "gainers": gains,
+                "losers": losses,
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate round: {str(e)}")
+
